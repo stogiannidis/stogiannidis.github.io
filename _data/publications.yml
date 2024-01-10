@@ -39,7 +39,7 @@ main:
     pdf: ./assets/files/LLMPenny.pdf
     page: https://helvia.ai/labs/making-llms-worth-every-penny-resource-limited-text-classification-in-banking/
     bibtex: https://helvia.ai/labs/making-llms-worth-every-penny-resource-limited-text-classification-in-banking/#citation
-    notes: Early Accept
+    notes: Oral Pressentation
     image: ./assets/img/LLM.png
 
   - title: "Breaking the Bank with ChatGPT: Few-Shot Text Classification for Finance"
