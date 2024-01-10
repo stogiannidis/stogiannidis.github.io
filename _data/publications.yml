@@ -32,7 +32,7 @@ main:
     notes: Poster Presentation
     image: ./assets/img/architecture_new.png
   
-    - title: "Making LLMs Worth Every Penny: Resource-Limited Text Classification in Finance"
+  - title: "Making LLMs Worth Every Penny: Resource-Limited Text Classification in Finance"
     authors: Lefteris Loukas, Ilias Stogiannidis, Odysseas Diamantopoulos-Pantaleon, Stavros Vassos, Prodromos Malakasiotis
     conference_short: ICAIF2023
     conference: In Proceedings of the 4th ACM International Conference on AI in Finance <strong>(ICAIF)</strong>,New York, NY, USA, 2023.
