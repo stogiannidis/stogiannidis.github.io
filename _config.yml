@@ -1,7 +1,7 @@
 # Basic Information 
 title: Ilias Stogiannidis
 position: Machine Learning Research Engineer
-affiliation: Athens University of Economics and Business (AUEB), Helvia.ai
+affiliation: Helvia.ai
 a_email: stoyianel@aueb.gr
 p_email: stoyianel@gmail.com
 address: Athens, Greece
@@ -16,9 +16,9 @@ canonical: https://minimal-light-theme.yliu.me/
 # If you don't need one of them, you may delete the corresponding line.
 google_scholar: https://scholar.google.com/citations?user=h9Pxv-kAAAAJ&hl=el&authuser=1
 cv_link: https://drive.google.com/file/d/1-EFu9DdmXlBt6SIpniP26MJbU3jGdf3e/view?usp=sharing
-github_link: https://github.com/stoyian
+github_link: https://github.com/stogiannidis
 linkedin: https://www.linkedin.com/in/stogiannidis/
-twitter: https://x.com/stogianel
+twitter: https://x.com/istogiannidis
 email: stoyianel@aueb.gr
 
 # Images (e.g., your profile picture and your website's favicon) 
@@ -37,7 +37,7 @@ auto_dark_mode: true
 
 # Font
 # You can use this option to choose between Serif or Sans Serif fonts.
-font: "Roboto" # or "Sans Serif"
+font: "Fira Code" # or "Sans Serif"
 
 # Google Analytics ID
 # Please remove this if you don't use Google Analytics
