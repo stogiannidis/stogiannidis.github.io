@@ -28,9 +28,20 @@ main:
     pdf: https://arxiv.org/abs/2310.13395
     code: https://github.com/stoyian/OCaTS
     bibtex: https://github.com/stoyian/OCaTS#citation
-    notes: Early Accept
+    pape: https://helvia.ai/labs
+    notes: Poster Presentation
     image: ./assets/img/architecture_new.png
   
+    - title: "Making LLMs Worth Every Penny: Resource-Limited Text Classification in Finance"
+    authors: Lefteris Loukas, Ilias Stogiannidis, Odysseas Diamantopoulos-Pantaleon, Stavros Vassos, Prodromos Malakasiotis
+    conference_short: ICAIF2023
+    conference: In Proceedings of the 4th ACM International Conference on AI in Finance <strong>(ICAIF)</strong>,New York, NY, USA, 2023.
+    pdf: ./assets/files/LLMPenny.pdf
+    page: https://helvia.ai/labs/making-llms-worth-every-penny-resource-limited-text-classification-in-banking/
+    bibtex: https://helvia.ai/labs/making-llms-worth-every-penny-resource-limited-text-classification-in-banking/#citation
+    notes: Early Accept
+    image: ./assets/img/LLM.png
+
   - title: "Breaking the Bank with ChatGPT: Few-Shot Text Classification for Finance"
     authors: Lefteris Loukas, Ilias Stogiannidis, Stavros Vassos, Prodromos Malakasiotis
     conference_short: FINNLP2023
@@ -41,12 +52,3 @@ main:
     notes: Oral Pressentation
     image: ./assets/img/BRBANK.png
   
-  - title: "Making LLMs Worth Every Penny: Resource-Limited Text Classification in Finance"
-    authors: Lefteris Loukas, Ilias Stogiannidis, Odysseas Diamantopoulos-Pantaleon, Stavros Vassos, Prodromos Malakasiotis
-    conference_short: ICAIF2023
-    conference: In Proceedings of the 4th ACM International Conference on AI in Finance <strong>(ICAIF)</strong>,New York, NY, USA, 2023.
-    pdf: ./assets/files/LLMPenny.pdf
-    # code: https://github.com/stoyian/OCaTS
-    # bibtex: https://class-il.mpi-inf.mpg.de/mnemonics/
-    notes: Early Accept
-    image: ./assets/img/LLM.png
