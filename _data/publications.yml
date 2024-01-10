@@ -28,7 +28,7 @@ main:
     pdf: https://arxiv.org/abs/2310.13395
     code: https://github.com/stoyian/OCaTS
     bibtex: https://github.com/stoyian/OCaTS#citation
-    pape: https://helvia.ai/labs
+    page: https://helvia.ai/labs
     notes: Poster Presentation
     image: ./assets/img/architecture_new.png
   
