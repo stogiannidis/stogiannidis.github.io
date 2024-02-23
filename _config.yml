@@ -13,7 +13,7 @@ canonical: https://minimal-light-theme.yliu.me/
 # Links 
 # If you don't need one of them, you may delete the corresponding line.
 google_scholar: https://scholar.google.com/citations?user=h9Pxv-kAAAAJ&hl=el&authuser=1
-cv_link: https://drive.google.com/file/d/1i8VwptCmx0ItPCsfOoct62kM0ElSK9NT/view?usp=sharing
+cv_link: https://drive.google.com/file/d/1i8VwptCmx0ItPCsfOoct62kM0ElSK9NT/view
 github_link: https://github.com/stogiannidis
 linkedin: https://www.linkedin.com/in/stogiannidis/
 twitter: https://x.com/istogiannidis
@@ -35,7 +35,7 @@ auto_dark_mode: true
 
 # Font
 # You can use this option to choose between Serif or Sans Serif fonts.
-font: "Roboto" # or "Sans Serif"
+font: "Sans Serif" # or "Sans Serif"
 
 # Google Analytics ID
 # Please remove this if you don't use Google Analytics
