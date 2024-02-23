@@ -4,7 +4,7 @@ layout: homepage
 
 ## About Me
 
-I have completed my M.Sc in Computer Science at Athens University of Economics and Business (AUEB) under the supervision of Prof. [Ion Androutsopoulos](https://www2.aueb.gr/users/ion/) and am now looking to pursue my studies further at the doctoral level. Meanwhile, I am a Machine Learning Research Engineer at [helvia.ai](https://helvia.ai/), specializing in NLP and Large Language Models. I am also an active member of the <a href="http://nlp.cs.aueb.gr/" target="_blank"> Natural Language Processing Group </a> at AUEB where we conduct research on NLP and Machine Learning.
+I have completed my M.Sc in Computer Science at Athens University of Economics and Business (AUEB) under the supervision of Prof. [Ion Androutsopoulos](https://www2.aueb.gr/users/ion/) and am now looking to pursue my studies further at the doctoral level. Meanwhile, I am an Applied Machine Learning Researcher at [helvia.ai](https://helvia.ai/), specializing in NLP and Large Language Models. I am also an active member of the <a href="http://nlp.cs.aueb.gr/" target="_blank"> Natural Language Processing Group </a> at AUEB where we conduct research on NLP and Machine Learning.
 
 You're welcome to reach out to me using the emails provided.
 Currently, the time for me is: <span id="current-time"></span>
