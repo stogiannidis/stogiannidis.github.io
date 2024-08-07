@@ -1,7 +1,7 @@
 # Basic Information 
 title: Ilias Stogiannidis
-position: Applied Machine Learning Researcher
-affiliation: Helvia.ai
+position: Phd Student
+affiliation: The University of Edinburgh
 address: Athens, Greece
 
 # Search Engine Optimization (SEO)
@@ -17,7 +17,7 @@ cv_link: https://drive.google.com/file/d/1i8VwptCmx0ItPCsfOoct62kM0ElSK9NT/view
 github_link: https://github.com/stogiannidis
 linkedin: https://www.linkedin.com/in/stogiannidis/
 twitter: https://x.com/istogiannidis
-email: stoyianel@gmail.gr
+email: i.stogiannidis@ed.ac.uk
 
 # Images (e.g., your profile picture and your website's favicon) 
 # "favicon" and "favicon_dark" are used for the light and dark modes, respectively. 
@@ -35,7 +35,7 @@ auto_dark_mode: true
 
 # Font
 # You can use this option to choose between Serif or Sans Serif fonts.
-font: "Sans Serif" # or "Sans Serif"
+font: "Roboto" # or "Sans Serif"
 
 # Google Analytics ID
 # Please remove this if you don't use Google Analytics
