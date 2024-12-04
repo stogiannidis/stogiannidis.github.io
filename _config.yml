@@ -21,7 +21,7 @@ email: i.stogiannidis@ed.ac.uk
 
 # Images (e.g., your profile picture and your website's favicon) 
 # "favicon" and "favicon_dark" are used for the light and dark modes, respectively. 
-avatar: .assets/img/profile.png
+avatar: ./assets/img/prof.png
 favicon: ./assets/img/man.png
 favicon_dark: ./assets/img/man.png
 
