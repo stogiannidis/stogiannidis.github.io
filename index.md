@@ -50,7 +50,7 @@ I am particularly interested in the following topics:
 
 ## News
 
-- **[Dec. 2024]** I'll be visiting AUEB to give a talk about pursuing a PhD abroad.
+- **[Dec. 2024]** On the 20th, I'll be visiting AUEB to give a talk about pursuing a PhD abroad.
 - **[Aug. 2024]** I have parted ways with helvia.ai and I am now a PhD Student at The University of Edinburgh.
 - **[Dec. 2023]** My thesis is now available in the NLP Group's [website](http://nlp.cs.aueb.gr/theses.html).
 - **[Nov. 2023]** Our paper has been selected for poster presentation at EMNLP 2023. See you in Singapore!
