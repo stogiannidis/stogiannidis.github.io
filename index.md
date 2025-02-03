@@ -42,8 +42,8 @@ Currently, the time for me is: <span id="current-time"></span>
 
 I am particularly interested in the following topics:
 
-- **Computer Vision:** Visual & Spatio-Semantic Reasoning, Multimodal Learning, Vision-Language Models, Generative Adversarial Networks
-- **Deep Learning:** Efficient Architectures, Graph Neural Networks, Meta-Learning, Loss Functions
+- **Computer Vision:** Visual & Spatio-Semantic Reasoning, Multimodal Learning, Foundation Models, Generative Adversarial Networks
+- **Deep Learning:** Efficient Architectures, Graph Neural Networks, Meta-Learning, Self-Supervised Learning
 - **Natural Language Processing:** Large Language Models, Reasoning
 - **Reinforcement (Robot) Learning:** Multi-agent Systems, Socratic Learning, Human-Robot Interaction, Robot Navigation
 
