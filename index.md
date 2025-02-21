@@ -13,10 +13,10 @@ Prior to my PhD, I completed my MSc in Computer Science at Athens University of 
 I also worked as an Applied Machine Learning Researcher at [helvia.ai](https://helvia.ai/), specializing in NLP and Large Language Models.
 Finally, I am an active member of the <a href="http://nlp.cs.aueb.gr/" target="_blank"> Natural Language Processing Group </a> at AUEB where we conduct research on NLP and Machine Learning. -->
 
-My name is Ilias (pronounced “ee-lee-ahs” or “ee-ly-ahs”), and I’m a PhD student at The University of Edinburgh. I’m part of the [Vios Science Lab](https://vios.science/) under the guidance of Prof. [Sotos Tsaftaris](https://www.eng.ed.ac.uk/about/people/dr-sotirios-tsaftaris).
+My name is Ilias (pronounced “ee-lee-ahs” or “ee-ly-ahs”), and I’m a PhD student at The University of Edinburgh. I’m part of the [Vios Science Lab](https://vios.science/) under the guidance of Prof. [Sotos Tsaftaris](https://www.eng.ed.ac.uk/about/people/dr-sotirios-tsaftaris) and Dr. [Steven McDonagh](https://smcdonagh.github.io/).
 
-My research interests lie in Foundational Models and Applications, particularly in the intersection of Computer Vision and Natural Language Processing. I’m fascinated by how we can harness multimodal data to develop more advanced and interpretable models.
-Additionally, I’m intrigued by Reinforcement Learning and its potential to train agents to perform intricate tasks in the real world.
+My research interests lie in **spatial** and **temporal** **reasoning** in **Foundational Models**. I'm also interested in **multimodal** learning and efficient models.
+Additionally, I’m fascinated by the intersection of **Computer Vision** and **Natural Language Processing** and **Robotics**.
 
 Before embarking on my PhD, I completed my MSc in Computer Science at Athens University of Economics and Business (AUEB).
 I was supervised by Prof. [Ion Androutsopoulos](https://www2.aueb.gr/users/ion/). Furthermore, I had the opportunity to work as an Applied Machine Learning Researcher at [helvia.ai](https://helvia.ai/), specializing in Natural Language Processing and Large Language Models.
