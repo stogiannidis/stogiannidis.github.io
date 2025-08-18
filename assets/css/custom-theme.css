@@ -1,0 +1,182 @@
+:root {
+  /* Improved higher-contrast light palette */
+  --bg: #ffffff;
+  --bg-alt: #f2f5f9; /* slightly darker than pure white for separation */
+  --text: #1f2d3a; /* darker for better contrast */
+  --text-alt: #43505c; /* improved contrast over #555 */
+  --accent: #0b57d0; /* more saturated / WCAG-friendly */
+  --accent-accent: #084093;
+  --border: #ced6e0; /* stronger than previous #e2e8f0 */
+  --radius-s: 6px;
+  --radius-m: 12px;
+  --radius-l: 20px;
+  --shadow-s: 0 2px 4px rgba(0,0,0,.08);
+  --shadow-m: 0 6px 20px rgba(0,0,0,.12);
+  --gradient-accent: linear-gradient(135deg,#0b57d0,#084093);
+  color-scheme: light dark;
+}
+
+:root[data-theme='dark'] {
+  --bg: #1e2228;
+  --bg-alt: #262c34;
+  --text: #e6e8ea;
+  --text-alt: #b2b9c3;
+  --accent: #5aa9ff;
+  --accent-accent: #2d7ed5;
+  --border: #323a43;
+  --shadow-s: 0 2px 4px rgba(0,0,0,.6);
+  --shadow-m: 0 6px 18px rgba(0,0,0,.5);
+  --gradient-accent: linear-gradient(135deg,#2d7ed5,#163d72);
+}
+
+/* Page base */
+body {
+  background: var(--bg);
+  color: var(--text);
+  transition: background .4s ease, color .4s ease;
+}
+
+section {
+  background: var(--bg);
+}
+
+/* Cards refinement */
+.enhanced-pub-card,
+.research-card,
+.exp-item,
+.news-item,
+.contact-section {
+  background: var(--bg-alt) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow-s) !important;
+}
+
+.enhanced-pub-card:hover,
+.research-card:hover,
+.exp-item:hover,
+.news-item:hover {
+  box-shadow: var(--shadow-m) !important;
+}
+
+/* Accent elements */
+a { color: var(--accent); font-weight: 500; }
+a:hover { color: var(--accent-accent); }
+
+h1,h2,h3,h4,h5,h6 { color: var(--text); letter-spacing: .5px; }
+
+/* Research Interest tags */
+.topic-tag { background: var(--gradient-accent); color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.3); }
+
+/* Theme toggle adaptive */
+#theme-toggle { 
+  --toggle-border: var(--border); 
+  background: var(--bg-alt); 
+  color: var(--text); 
+  box-shadow: var(--shadow-s);
+  backdrop-filter: saturate(140%) blur(6px);
+}
+#theme-toggle:hover { 
+  background: var(--accent); 
+  color:#fff; 
+}
+
+/* Subtle animated underline for links */
+a:not(.no-underline) { position: relative; }
+a:not(.no-underline)::after { content:""; position:absolute; left:0; bottom:-2px; height:3px; width:0; background: var(--accent); transition: width .3s ease; opacity:.85; }
+a:not(.no-underline):hover::after { width:100%; }
+
+/* Smooth fade for images */
+img { opacity: 0; transform: scale(.98); transition: opacity .6s ease, transform .6s ease; }
+img[loading], img[data-loaded='true'] { opacity:1; transform: scale(1); }
+
+/* Refined list in research interests */
+.research-interests-list { list-style:none; padding:0; margin:0; display:grid; gap:10px; }
+.research-interests-list li { background: #e7edf3; /* more contrast */ padding:10px 14px; border:1px solid var(--border); border-radius: var(--radius-s); font-size:.9rem; }
+:root[data-theme='dark'] .research-interests-list li { background:#2a3037; }
+
+/* News timeline accent left bar */
+.news-item { position:relative; }
+.news-item::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background: var(--gradient-accent); border-top-left-radius:4px; border-bottom-left-radius:4px; }
+
+/* Scrollbar styling (Webkit) */
+* { scrollbar-width: thin; scrollbar-color: var(--accent) var(--bg-alt); }
+::-webkit-scrollbar { width:10px; }
+::-webkit-scrollbar-track { background: var(--bg-alt); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius:6px; border:2px solid var(--bg-alt); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-accent); }
+
+/* Global font stack using Inter as closest open-source to Google Sans */
+body, button, input, select, textarea, h1, h2, h3, h4, h5, h6, .research-card, .news-item, .exp-item, .publications, position, papertitle, education {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Responsive improvements */
+@media (max-width: 860px){
+  header { position: static; width: 100%; }
+  .wrapper { width:100%; }
+  section { width:100%; padding-top:1rem; }
+  #theme-toggle { position: relative; margin-top: 10px; }
+}
+
+/* Force higher contrast (replace greys with black on LIGHT theme) */
+:root:not([data-theme='dark']) {
+  --text: #000000;
+  --text-alt: #222222;
+}
+
+/* Ensure headings and body pick up new variables (legacy specificity backup) */
+:root:not([data-theme='dark']) body { color: var(--text); }
+:root:not([data-theme='dark']) h1,
+:root:not([data-theme='dark']) h2,
+:root:not([data-theme='dark']) h3,
+:root:not([data-theme='dark']) h4,
+:root:not([data-theme='dark']) h5,
+:root:not([data-theme='dark']) h6 { color: var(--text); }
+
+/* Strengthen contrast on secondary descriptive text */
+:root:not([data-theme='dark']) .pub-authors,
+:root:not([data-theme='dark']) .pub-venue,
+:root:not([data-theme='dark']) .news-date,
+:root:not([data-theme='dark']) .exp-content p { color: var(--text-alt); }
+
+/* Comprehensive light theme overrides: force all textual content to pure black for maximum contrast */
+:root:not([data-theme='dark']) body,
+:root:not([data-theme='dark']) p,
+:root:not([data-theme='dark']) li,
+:root:not([data-theme='dark']) h1,
+:root:not([data-theme='dark']) h2,
+:root:not([data-theme='dark']) h3,
+:root:not([data-theme='dark']) h4,
+:root:not([data-theme='dark']) h5,
+:root:not([data-theme='dark']) h6,
+:root:not([data-theme='dark']) strong,
+:root:not([data-theme='dark']) b,
+:root:not([data-theme='dark']) .research-card,
+:root:not([data-theme='dark']) .research-card li,
+:root:not([data-theme='dark']) .news-item,
+:root:not([data-theme='dark']) .news-item .news-content,
+:root:not([data-theme='dark']) .news-item .news-date,
+:root:not([data-theme='dark']) .exp-item,
+:root:not([data-theme='dark']) .exp-content p,
+:root:not([data-theme='dark']) .pub-authors,
+:root:not([data-theme='dark']) .pub-venue,
+:root:not([data-theme='dark']) position,
+:root:not([data-theme='dark']) papertitle,
+:root:not([data-theme='dark']) education {
+  color: #000 !important;
+}
+
+/* Publication link buttons: force black text in light theme */
+:root:not([data-theme='dark']) .publications ol.bibliography li .links a.btn {
+  color:#000 !important;
+  border-color:#000 !important;
+  background: linear-gradient(180deg,#ffffff,#e9eef3);
+  font-weight:600;
+}
+:root:not([data-theme='dark']) .publications ol.bibliography li .links a.btn:hover {
+  background:#000;
+  color:#fff !important;
+  border-color:#000 !important;
+}
