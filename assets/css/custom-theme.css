@@ -13,6 +13,7 @@
   --shadow-s: 0 2px 4px rgba(0,0,0,.08);
   --shadow-m: 0 6px 20px rgba(0,0,0,.12);
   --gradient-accent: linear-gradient(135deg,#0b57d0,#084093);
+  --global-theme-color: #5a189a; /* publications */
   color-scheme: light dark;
 }
 
@@ -27,6 +28,20 @@
   --shadow-s: 0 2px 4px rgba(0,0,0,.6);
   --shadow-m: 0 6px 18px rgba(0,0,0,.5);
   --gradient-accent: linear-gradient(135deg,#2d7ed5,#163d72);
+}
+
+/* === Deep Purple Theme Override === */
+:root:not([data-theme='dark']) {
+  --accent: #6a00d9;
+  --accent-accent: #4a00a8;
+  --gradient-accent: linear-gradient(135deg,#7b2ff7,#4a00a8);
+  --global-theme-color: #5a189a; /* publications */
+}
+:root[data-theme='dark'] {
+  --accent: #b48cff;
+  --accent-accent: #d9c2ff;
+  --gradient-accent: linear-gradient(135deg,#5a189a,#240046);
+  --global-theme-color: #b48cff;
 }
 
 /* Page base */
@@ -120,6 +135,26 @@ body, button, input, select, textarea, h1, h2, h3, h4, h5, h6, .research-card, .
   #theme-toggle { position: relative; margin-top: 10px; }
 }
 
+/* Skip link accessibility */
+.skip-link { position:absolute; left:8px; top:-40px; background:#000; color:#fff; padding:8px 14px; border-radius:6px; z-index:1000; font-weight:600; transition:top .25s ease; }
+.skip-link:focus { top:8px; outline:2px solid var(--accent); }
+
+/* Focus-visible outline */
+:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+
+/* Reveal animation classes */
+.reveal { opacity:0; transform:translateY(18px); transition:opacity .6s cubic-bezier(.4,.2,.2,1), transform .6s cubic-bezier(.4,.2,.2,1); }
+.reveal.in { opacity:1; transform:none; }
+@media (prefers-reduced-motion: reduce){ .reveal { opacity:1 !important; transform:none !important; transition:none !important; } }
+
+/* Prose area max width */
+.prose-area { max-width: 72ch; }
+.prose-area p { line-height:1.65; }
+
+/* Theme toggle refinement */
+.theme-toggle-btn { background:var(--bg-alt); border:1px solid var(--border); padding:6px 14px; border-radius:999px; cursor:pointer; font-weight:500; }
+.theme-toggle-btn:hover { background:var(--accent); color:#fff; }
+
 /* Force higher contrast (replace greys with black on LIGHT theme) */
 :root:not([data-theme='dark']) {
   --text: #000000;
@@ -176,7 +211,68 @@ body, button, input, select, textarea, h1, h2, h3, h4, h5, h6, .research-card, .
   font-weight:600;
 }
 :root:not([data-theme='dark']) .publications ol.bibliography li .links a.btn:hover {
-  background:#000;
+  background: var(--accent); border-color: var(--accent);
   color:#fff !important;
   border-color:#000 !important;
 }
+:root[data-theme='dark'] .publications ol.bibliography li .links a.btn:hover { background: var(--accent); border-color: var(--accent); color:#000; }
+
+/* Social / header icons updated to deep purple theme */
+.social-icons a, .social-icons a:visited {
+  color: var(--accent) !important;
+  background: transparent;
+  border-radius: 50%;
+  width: 2.4rem; height: 2.4rem;
+  display:inline-flex; align-items:center; justify-content:center;
+  transition: background .35s ease, color .35s ease, transform .35s ease, box-shadow .35s ease;
+  border:1px solid transparent;
+}
+.social-icons a:hover {
+  background: var(--gradient-accent);
+  color:#ffffff !important;
+  transform: translateY(-3px) scale(1.12);
+  box-shadow: 0 6px 18px -4px rgba(90,24,154,.45);
+}
+:root[data-theme='dark'] .social-icons a {
+  color: var(--accent) !important;
+}
+:root[data-theme='dark'] .social-icons a:hover {
+  background: var(--gradient-accent);
+  color:#fff !important;
+  box-shadow: 0 6px 18px -4px rgba(180,140,255,.55);
+}
+
+/* Enhanced social icon aesthetics with glass + gradient ring */
+.social-icons { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+.social-icon { position:relative; width:44px; height:44px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:var(--accent) !important; background:linear-gradient(135deg,rgba(255,255,255,.85),rgba(245,245,255,.6)); backdrop-filter:blur(8px) saturate(160%); -webkit-backdrop-filter:blur(8px) saturate(160%); box-shadow:0 4px 10px -2px rgba(0,0,0,.15), 0 2px 4px rgba(0,0,0,.08); overflow:hidden; border:1px solid rgba(255,255,255,.55); transition:transform .5s cubic-bezier(.19,1,.22,1), box-shadow .4s ease, background .4s ease; }
+:root[data-theme='dark'] .social-icon { background:linear-gradient(135deg,rgba(40,40,55,.85),rgba(60,60,80,.55)); border:1px solid rgba(255,255,255,.08); }
+/* Replace previous .social-icon:before rule with cross-browser version */
+.social-icon:before {
+  content:""; position:absolute; inset:0; padding:2px; border-radius:50%;
+  background:conic-gradient(from 0deg,var(--accent),transparent 140deg,var(--accent-accent));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude; opacity:.65; transition:opacity .5s ease;
+}
+.social-icon:after { content:attr(data-label); position:absolute; bottom:-6px; left:50%; transform:translate(-50%,100%); background:#000; color:#fff; font-size:.62rem; letter-spacing:.5px; padding:4px 6px; border-radius:6px; white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .35s ease, transform .35s ease; font-weight:600; }
+:root[data-theme='dark'] .social-icon:after { background:#111; }
+.social-icon:hover { transform:translateY(-6px) scale(1.1); box-shadow:0 10px 28px -6px rgba(90,24,154,.45),0 4px 12px rgba(0,0,0,.25); }
+.social-icon:hover:before { opacity:1; }
+.social-icon:hover:after { opacity:1; transform:translate(-50%, 60%); }
+.social-icon i { font-size:1.05rem; z-index:2; }
+
+/* Platform-specific accent glows */
+.social-icon.github i { text-shadow:0 0 4px rgba(255,255,255,.4); }
+.social-icon.linkedin:before { background:conic-gradient(from 0deg,#0a66c2,#0a66c2 120deg,transparent 220deg,#0a66c2); }
+.social-icon.twitter:before { background:conic-gradient(from 0deg,#6a00d9,#6a00d9 140deg,transparent 230deg,#4a00a8); }
+.social-icon.scholar:before { background:conic-gradient(from 0deg,#4285f4,#34a853,#fbbc05,#ea4335,#4285f4); }
+.social-icon.cv:before { background:conic-gradient(from 0deg,var(--accent), var(--accent-accent) 160deg,transparent 250deg,var(--accent)); }
+.social-icon.email:before { background:conic-gradient(from 0deg,#ff9f1c,#ff6a3d 120deg,transparent 210deg,#ff9f1c); }
+
+/* High contrast focus */
+.social-icon:focus-visible { outline:2px solid var(--accent); outline-offset:4px; }
+/* Favicon / theme toggle icon color alignment */
+.theme-toggle-btn .theme-icon { filter: drop-shadow(0 1px 2px rgba(0,0,0,.25)); }
+
+/* Institution name black in light theme */
+:root:not([data-theme='dark']) header a autocolor { color:#000 !important; }
