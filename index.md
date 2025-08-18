@@ -29,11 +29,16 @@ Feel free to reach out to me if you are interested in collaborating or if you ha
 Currently, the time for me is: <span id="current-time"></span>
 
 <script>
-  setInterval(() => {
-    const now = new Date();
-    const options = { hour: '2-digit', minute: '2-digit' ,timeZone: 'Europe/Dublin'};
-    document.getElementById('current-time').textContent = now.toLocaleTimeString([], options);
-  }, 1000);
+  (function() {
+    function updateTime() {
+      const now = new Date();
+      const options = { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Dublin' };
+      document.getElementById('current-time').textContent = now.toLocaleTimeString([], options);
+    }
+    
+    updateTime(); // Set initial time
+    setInterval(updateTime, 60000); // Update every minute instead of every second
+  })();
 </script>
 
 

@@ -1,49 +1,51 @@
 ;(function(mod){
+'use strict';
+
 function collectLinks() {
-  return Array.prototype.slice.apply(
+  return Array.prototype.slice.call(
     document.head.querySelectorAll('link[rel*="icon"]')
-  )
+  );
 }
 
 function applyLink(source, target) {
-  target.setAttribute('type', source.getAttribute('type'))
-  target.setAttribute('href', source.getAttribute('href'))
+  target.setAttribute('type', source.getAttribute('type'));
+  target.setAttribute('href', source.getAttribute('href'));
 }
 
 // eslint-disable-next-line no-unused-vars
 function initSwitcher(delay) {
   // Exit if media queries aren't supported
   if (typeof window.matchMedia !== 'function') {
-    return function noop() {}
+    return function noop() {};
   }
 
-  var links = collectLinks()
-  var current = document.createElement('link')
-  var prevMatch
+  var links = collectLinks();
+  var current = document.createElement('link');
+  var prevMatch;
 
-  current.setAttribute('rel', 'shortcut icon')
-  document.head.appendChild(current)
+  current.setAttribute('rel', 'shortcut icon');
+  document.head.appendChild(current);
 
   function faviconApplyLoop() {
-    var matched
+    var matched;
 
     links.forEach(function(link) {
       if (window.matchMedia(link.media).matches) {
-        matched = link
+        matched = link;
       }
-    })
+    });
 
-    if (! matched) {
-      return
+    if (!matched) {
+      return;
     }
 
     if (matched.media !== prevMatch) {
-      prevMatch = matched.media
-      applyLink(matched, current)
+      prevMatch = matched.media;
+      applyLink(matched, current);
     }
   }
 
-  var intervalId = setInterval(faviconApplyLoop, delay || 300)
+  var intervalId = setInterval(faviconApplyLoop, delay || 300);
 
   function unsubscribe() {
     clearInterval(intervalId)

@@ -56,4 +56,27 @@ exclude:
   - README_de.md
   - LICENSE
   - minimal-light.gemspec
+  - node_modules/
+  - vendor/
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
   # - html_source_file/
+
+# Jekyll performance optimizations
+sass:
+  style: compressed
+  
+# Plugin configuration
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+  
+# Compression
+compress_html:
+  clippings: all
+  comments: all
+  endings: all
+  startings: []
+  blanklines: false
+  profile: false
