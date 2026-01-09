@@ -456,83 +456,83 @@
     color: #ecf0f1;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
-  
+
   .pub-title a {
     color: #ecf0f1;
   }
-  
+
   .pub-title a:hover {
     color: #3498db;
   }
-  
+
   .pub-authors {
     color: #bdc3c7;
   }
-  
+
   .pub-venue {
     color: #95a5a6;
   }
-  
+
   .contact-section {
     background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
     color: #ecf0f1;
   }
-  
+
   .time-display {
     background: rgba(236, 240, 241, 0.9);
     color: #2c3e50;
   }
-  
+
   .collab-header h3 {
     color: #ecf0f1;
   }
-  
+
   .collab-content p {
     color: #ecf0f1;
   }
-  
+
   .contact-prompt {
     background: rgba(52, 73, 94, 0.7);
     border-color: #3498db;
   }
-  
+
   .contact-prompt p {
     color: #ecf0f1;
   }
-  
+
   .research-card {
     background: linear-gradient(145deg, #34495e 0%, #2c3e50 100%);
     color: #ecf0f1;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
-  
+
   .research-card h3 {
     color: #ecf0f1;
   }
-  
+
   .research-card li {
     color: #bdc3c7;
   }
-  
+
   .news-item {
     background: #34495e;
     color: #ecf0f1;
   }
-  
+
   .news-item.highlight {
     background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
   }
-  
+
   .exp-item {
     background: #34495e;
     color: #ecf0f1;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
-  
+
   .exp-content h4 {
     color: #ecf0f1;
   }
-  
+
   .exp-content p {
     color: #bdc3c7;
   }
@@ -544,63 +544,60 @@
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  
+
   .experience-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .news-item {
     flex-direction: column;
   }
-  
+
   .news-date {
     margin-bottom: 10px;
     margin-right: 0;
   }
-  
+
   .contact-section {
     padding: 20px;
     margin: 20px 0;
   }
-  
+
   .collab-topics {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .topic-tag {
     margin: 5px 0;
     width: fit-content;
   }
-  
+
   .collab-header h3 {
     font-size: 1.2rem;
   }
-  
+
   .exp-item {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .exp-icon {
     margin-right: 0;
     margin-bottom: 15px;
   }
-  
+
   .enhanced-pub-card {
     padding: 20px;
   }
-  
+
   .pub-links {
     flex-direction: column;
     align-items: flex-start;
   }
 }
 
-/* Smooth animations */
-* {
-  transition: all 0.3s ease;
-}
+/* Smooth animations - global * transition removed to fix text overlap */
 
 /* Enhanced typography */
 h2 {
@@ -633,6 +630,7 @@ a:hover {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -645,6 +643,7 @@ a:hover {
 .enhanced-pub-card {
   animation: fadeInUp 0.6s ease-out;
 }
+
 .contact-section {
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   border-radius: 15px;
@@ -899,45 +898,45 @@ a:hover {
     background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
     color: #ecf0f1;
   }
-  
+
   .time-display {
     background: rgba(236, 240, 241, 0.9);
     color: #2c3e50;
   }
-  
+
   .research-card {
     background: linear-gradient(145deg, #34495e 0%, #2c3e50 100%);
     color: #ecf0f1;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
-  
+
   .research-card h3 {
     color: #ecf0f1;
   }
-  
+
   .research-card li {
     color: #bdc3c7;
   }
-  
+
   .news-item {
     background: #34495e;
     color: #ecf0f1;
   }
-  
+
   .news-item.highlight {
     background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
   }
-  
+
   .exp-item {
     background: #34495e;
     color: #ecf0f1;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
-  
+
   .exp-content h4 {
     color: #ecf0f1;
   }
-  
+
   .exp-content p {
     color: #bdc3c7;
   }
@@ -949,40 +948,37 @@ a:hover {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  
+
   .experience-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .news-item {
     flex-direction: column;
   }
-  
+
   .news-date {
     margin-bottom: 10px;
     margin-right: 0;
   }
-  
+
   .contact-section {
     padding: 20px;
     margin: 20px 0;
   }
-  
+
   .exp-item {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .exp-icon {
     margin-right: 0;
     margin-bottom: 15px;
   }
 }
 
-/* Smooth animations */
-* {
-  transition: all 0.3s ease;
-}
+/* Smooth animations - global * transition removed to fix text overlap */
 
 /* Enhanced typography */
 h2 {
@@ -1015,6 +1011,7 @@ a:hover {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
