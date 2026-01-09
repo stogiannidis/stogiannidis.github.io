@@ -33,41 +33,24 @@ Currently, the time for me is: <span id="current-time"></span>
 ## Research Interests
 <div class="research-grid">
   <div class="research-card">
-    <div class="research-icon">🧠</div>
-    <h3>Foundation & Reasoning</h3>
-    <ul>
-      <li>Spatial / Temporal Reasoning</li>
-      <li>Multimodal Alignment</li>
-      <li>Efficient Fine-Tuning</li>
-    </ul>
-  </div>
-  <div class="research-card">
-    <div class="research-icon">👁️</div>
-    <h3>Computer Vision</h3>
-    <ul>
-      <li>Spatio-Semantic Modeling</li>
-      <li>Generative / Diffusion Models</li>
-      <li>Graph & Structured Perception</li>
-    </ul>
-  </div>
-  <div class="research-card">
-    <div class="research-icon">💬</div>
-    <h3>NLP & LLMs</h3>
-    <ul>
-      <li>Instruction Following</li>
-      <li>Reasoning & Tool Use</li>
-      <li>Retrieval & Memory</li>
-    </ul>
-  </div>
-  <div class="research-card">
-    <div class="research-icon">🤖</div>
-    <h3>Robotics & RL</h3>
-    <ul>
-      <li>Embodied Agents</li>
-      <li>Multi-Agent Interaction</li>
-      <li>Socratic / Human-in-the-loop</li>
-    </ul>
-  </div>
+          <div class="research-icon">🧠</div>
+          <h3>Computational Linguistics &amp; Vision</h3>
+          <ul>
+            <li>Spatio-Temporal Reasoning</li>
+            <li>Reinforcement Learning &amp; Planning</li>
+            <li>Self-Supervised Learning</li>
+            <li>World Models</li>
+          </ul>
+        </div>
+        <div class="research-card">
+          <div class="research-icon">🤖</div>
+          <h3>Robotics &amp; RL</h3>
+          <ul>
+            <li>Embodied Agents</li>
+            <li>Multi-Agent Interaction</li>
+            <li>Motion Planning</li>
+          </ul>
+        </div>
 </div>
 
 ## News
