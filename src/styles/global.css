@@ -1,0 +1,264 @@
+/* CSS Variables for Light / Dark Theme */
+:root {
+	/* Light Theme */
+	--bg-color: #ffffff;
+	--bg-secondary: #f8f9fa;
+	--bg-hover: #e9ecef;
+	--text-color: #333333;
+	--text-secondary: #555555;
+	--heading-color: #2c3e50;
+	--primary-color: #3498db;
+	--primary-hover: #2980b9;
+	--border-color: #eaeaea;
+	--card-bg: #ffffff;
+	--card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+	--card-hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+	--badge-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	--badge-text: #ffffff;
+}
+
+[data-theme='dark'] {
+	/* Dark Theme */
+	--bg-color: #1a1a2e;
+	--bg-secondary: #16213e;
+	--bg-hover: #293241;
+	--text-color: #e0e0e0;
+	--text-secondary: #b0b0b0;
+	--heading-color: #ffffff;
+	--primary-color: #4da8da;
+	--primary-hover: #3b8bb8;
+	--border-color: #2e3b4e;
+	--card-bg: #222831;
+	--card-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+	--card-hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+	--badge-bg: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+	--badge-text: #ffffff;
+}
+
+html {
+	background-color: var(--bg-color);
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	background-color: transparent;
+	color: var(--text-color);
+	font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+	line-height: 1.6;
+	font-size: 16px;
+	scroll-behavior: smooth;
+	transition: color 0.3s ease;
+}
+
+/* Accessibility: Skip link */
+.skip-link {
+	position: absolute;
+	top: -40px;
+	left: 0;
+	background: var(--primary-color);
+	color: white;
+	padding: 8px;
+	z-index: 100;
+	transition: top 0.2s;
+}
+
+.skip-link:focus {
+	top: 0;
+}
+
+/* Layout Wrapper */
+.wrapper {
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 0 20px;
+	position: relative;
+}
+
+/* Prose Selection */
+.prose-area h2 {
+	color: var(--heading-color);
+	font-weight: 700;
+	margin-top: 2rem;
+	margin-bottom: 1rem;
+	font-size: 1.8rem;
+	border-bottom: 2px solid var(--border-color);
+	padding-bottom: 0.3rem;
+	display: inline-block;
+}
+
+.prose-area h3 {
+	color: var(--heading-color);
+	font-weight: 600;
+	margin-top: 1.5rem;
+	font-size: 1.4rem;
+}
+
+.prose-area p {
+	margin-bottom: 1.2rem;
+	color: var(--text-color);
+}
+
+.prose-area a {
+	color: var(--primary-color);
+	text-decoration: none;
+	font-weight: 500;
+}
+
+.prose-area a:hover {
+	text-decoration: underline;
+}
+
+/* Scroll Reveal classes */
+.reveal {
+	opacity: 0;
+	transform: translateY(30px);
+	transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.in {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+/* Stagger delays for cascade effect */
+.reveal-delay-1 {
+	transition-delay: 0.1s;
+}
+
+.reveal-delay-2 {
+	transition-delay: 0.2s;
+}
+
+.reveal-delay-3 {
+	transition-delay: 0.3s;
+}
+
+.reveal-delay-4 {
+	transition-delay: 0.4s;
+}
+
+/* ── Smooth theme transition on key elements (not wildcard to avoid View Transition conflicts) ── */
+.wrapper,
+header,
+footer,
+.post-card,
+.enhanced-pub-card,
+.timeline-content,
+.theme-toggle-btn,
+.social-icon,
+.nav-links,
+.top-nav,
+.blog-nav a,
+.tag,
+.toc-container,
+.share-btn,
+.pub-filter-btn,
+.tag-filter-btn {
+	transition: background-color 0.4s ease, border-color 0.4s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ── Back to top button ── */
+.back-to-top {
+	position: fixed;
+	bottom: 30px;
+	right: 30px;
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	background: var(--primary-color);
+	color: white;
+	border: none;
+	cursor: pointer;
+	font-size: 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0;
+	transform: translateY(20px);
+	transition: opacity 0.3s, transform 0.3s, background 0.3s;
+	z-index: 999;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+	pointer-events: none;
+}
+
+.back-to-top.visible {
+	opacity: 1;
+	transform: translateY(0);
+	pointer-events: auto;
+}
+
+.back-to-top:hover {
+	background: var(--primary-hover);
+	transform: translateY(-3px);
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Code copy button ── */
+.code-copy-btn {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	background: rgba(255, 255, 255, 0.1);
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	color: rgba(255, 255, 255, 0.6);
+	padding: 5px 8px;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 0.8rem;
+	opacity: 0;
+	transition: opacity 0.2s, background 0.2s, color 0.2s;
+	z-index: 1;
+}
+
+pre:hover .code-copy-btn {
+	opacity: 1;
+}
+
+.code-copy-btn:hover {
+	background: rgba(255, 255, 255, 0.2);
+	color: white;
+}
+
+.code-copy-btn.copied {
+	background: #27ae60;
+	color: white;
+	border-color: #27ae60;
+}
+
+/* ── Publication image hover ── */
+.pub-image-container img {
+	transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.enhanced-pub-card:hover .pub-image-container img {
+	transform: scale(1.05);
+	filter: brightness(1.1);
+}
+
+/* ── Custom Scrollbar ── */
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+	display: block;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--border-color);
+	border-radius: 5px;
+	border: 2px solid var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--primary-color);
+}
+
+/* Firefox scrollbar */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: var(--border-color) var(--bg-color);
+}

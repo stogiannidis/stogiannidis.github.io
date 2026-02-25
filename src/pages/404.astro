@@ -1,0 +1,125 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Page Not Found">
+  <div class="not-found">
+    <div class="robot-404">
+      <svg viewBox="0 0 200 220" width="160" height="176" aria-hidden="true">
+        <!-- Antenna -->
+        <line x1="100" y1="30" x2="100" y2="10" stroke="var(--primary-color)" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="100" cy="7" r="5" fill="var(--primary-color)" opacity="0.8"/>
+
+        <!-- Head -->
+        <rect x="62" y="30" width="76" height="52" rx="12" fill="var(--card-bg)" stroke="var(--primary-color)" stroke-width="2.5" opacity="0.9"/>
+        <!-- Eyes -->
+        <circle cx="82" cy="56" r="8" fill="var(--primary-color)" opacity="0.7"/>
+        <circle cx="118" cy="56" r="8" fill="var(--primary-color)" opacity="0.7"/>
+        <circle cx="84" cy="54" r="3" fill="white" opacity="0.8"/>
+        <circle cx="120" cy="54" r="3" fill="white" opacity="0.8"/>
+        <!-- Sad mouth -->
+        <path d="M 88 72 Q 100 64 112 72" stroke="var(--primary-color)" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+
+        <!-- Body -->
+        <rect x="55" y="88" width="90" height="70" rx="10" fill="var(--card-bg)" stroke="var(--primary-color)" stroke-width="2.5" opacity="0.85"/>
+        <!-- Panel -->
+        <rect x="75" y="100" width="50" height="30" rx="5" fill="var(--bg-secondary)" stroke="var(--border-color)" stroke-width="1"/>
+        <!-- 404 on panel -->
+        <text x="100" y="121" text-anchor="middle" font-family="monospace" font-size="18" font-weight="bold" fill="var(--primary-color)">404</text>
+
+        <!-- Arms -->
+        <line x1="55" y1="100" x2="30" y2="130" stroke="var(--primary-color)" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="28" cy="132" r="5" fill="var(--card-bg)" stroke="var(--primary-color)" stroke-width="2" opacity="0.6"/>
+        <line x1="145" y1="100" x2="170" y2="130" stroke="var(--primary-color)" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="172" cy="132" r="5" fill="var(--card-bg)" stroke="var(--primary-color)" stroke-width="2" opacity="0.6"/>
+
+        <!-- Legs -->
+        <line x1="80" y1="158" x2="76" y2="190" stroke="var(--primary-color)" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+        <rect x="64" y="188" width="20" height="8" rx="3" fill="var(--card-bg)" stroke="var(--primary-color)" stroke-width="2" opacity="0.6"/>
+        <line x1="120" y1="158" x2="124" y2="190" stroke="var(--primary-color)" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+        <rect x="116" y="188" width="20" height="8" rx="3" fill="var(--card-bg)" stroke="var(--primary-color)" stroke-width="2" opacity="0.6"/>
+      </svg>
+    </div>
+
+    <h1 class="not-found-title">Page Not Found</h1>
+    <p class="not-found-text">The page you're looking for doesn't exist or has been moved.</p>
+
+    <div class="not-found-actions">
+      <a href="/" class="not-found-btn primary">
+        <i class="fas fa-home"></i> Go Home
+      </a>
+      <a href="/blog" class="not-found-btn secondary">
+        <i class="fas fa-blog"></i> Read Blog
+      </a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .not-found {
+    text-align: center;
+    padding: 60px 20px;
+    max-width: 500px;
+    margin: 0 auto;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .robot-404 {
+    margin-bottom: 30px;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .not-found-title {
+    font-size: 2.5rem;
+    color: var(--heading-color);
+    margin: 0 0 10px 0;
+  }
+
+  .not-found-text {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+  }
+
+  .not-found-actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  .not-found-btn {
+    text-decoration: none;
+    padding: 10px 22px;
+    border-radius: 25px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .not-found-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  }
+
+  .not-found-btn.primary {
+    background: var(--primary-color);
+    color: white;
+  }
+
+  .not-found-btn.secondary {
+    background: var(--bg-secondary);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+  }
+</style>

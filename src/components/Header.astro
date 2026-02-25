@@ -1,0 +1,361 @@
+---
+import siteData from '../data/site.json';
+---
+
+<!-- Top Navigation -->
+<nav class="top-nav">
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/blog">Blog</a>
+  </div>
+  <button id="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle light/dark" class="theme-toggle-btn">
+    <span class="theme-icon">🌙</span>
+  </button>
+  <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Menu" type="button">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
+</nav>
+
+<header>
+  {siteData.avatar && (
+    <a class="image avatar" href="/">
+      <img src={siteData.avatar} alt={`${siteData.title} profile picture`} />
+    </a>
+  )}
+  
+  <h1>{siteData.title}</h1>
+  
+  <div class="position"><span id="typewriter"></span><span class="typewriter-cursor">|</span></div>
+  
+  {siteData.affiliation && (
+    <a href={siteData.affiliation_link} target="_blank" rel="noopener noreferrer" class="affiliation-link">
+      <div class="autocolor">{siteData.affiliation}</div>
+    </a>
+  )}
+  
+  <div class="social-icons">
+    {siteData.email && (
+      <a class="social-icon email" href={`mailto:${siteData.email}`} aria-label="Email">
+        <i class="fas fa-envelope"></i>
+      </a>
+    )}
+    {siteData.google_scholar && (
+      <a class="social-icon scholar" href={siteData.google_scholar} aria-label="Google Scholar" target="_blank" rel="noopener noreferrer">
+        <i class="ai ai-google-scholar"></i>
+      </a>
+    )}
+    {siteData.cv_link && (
+      <a class="social-icon cv" href={siteData.cv_link} aria-label="CV" target="_blank" rel="noopener noreferrer">
+        <i class="ai ai-cv"></i>
+      </a>
+    )}
+    {siteData.github_link && (
+      <a class="social-icon github" href={siteData.github_link} aria-label="GitHub" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-github"></i>
+      </a>
+    )}
+    {siteData.linkedin && (
+      <a class="social-icon linkedin" href={siteData.linkedin} aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-linkedin"></i>
+      </a>
+    )}
+    {siteData.twitter && (
+      <a class="social-icon twitter" href={siteData.twitter} aria-label="Twitter" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-x-twitter"></i>
+      </a>
+    )}
+  </div>
+</header>
+
+<script>
+  let typewriterTimerId: ReturnType<typeof setTimeout> | undefined;
+
+  document.addEventListener('astro:page-load', () => {
+    // Theme toggle functionality
+    const btn = document.getElementById('theme-toggle');
+    const root = document.documentElement;
+
+    function apply(theme: string) {
+      localStorage.setItem('theme', theme);
+      // Use the global applyThemeToDoc if available (from SEOHead)
+      if (typeof applyThemeToDoc === 'function') {
+        applyThemeToDoc(document);
+      } else {
+        if (theme === 'dark') {
+          root.setAttribute('data-theme', 'dark');
+        } else {
+          root.removeAttribute('data-theme');
+        }
+      }
+
+      if (btn) {
+        const icon = btn.querySelector('.theme-icon');
+        const isDark = theme === 'dark';
+        if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+        btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+      }
+    }
+
+    // Initial apply
+    apply(root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+
+    // Event listener
+    if (btn) {
+      btn.addEventListener('click', () => {
+        const nextTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        apply(nextTheme);
+      });
+    }
+
+    // ── Typewriter animation ──
+    clearTimeout(typewriterTimerId);
+    const tw = document.getElementById('typewriter');
+    if (tw) {
+      const phrases = ['PhD Student', 'Spatial & Temporal Reasoning', 'Computer Vision × NLP', 'Multimodal AI Researcher', 'Robotics Enthusiast'];
+      let pi = 0, ci = 0, deleting = false;
+      function tick() {
+        const phrase = phrases[pi];
+        if (!deleting) {
+          tw.textContent = phrase.slice(0, ++ci);
+          if (ci === phrase.length) { deleting = true; typewriterTimerId = setTimeout(tick, 2000); return; }
+          typewriterTimerId = setTimeout(tick, 80 + Math.random() * 40);
+        } else {
+          tw.textContent = phrase.slice(0, --ci);
+          if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; typewriterTimerId = setTimeout(tick, 400); return; }
+          typewriterTimerId = setTimeout(tick, 40);
+        }
+      }
+      tick();
+    }
+  });
+</script>
+
+<style>
+  .top-nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem 1.5rem;
+  }
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+  .nav-links a {
+    color: var(--text-color, #000);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.05rem;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+  .nav-links a:hover {
+    opacity: 1;
+  }
+
+  /* Hamburger button — hidden on desktop */
+  .mobile-menu-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    width: 28px;
+    height: 28px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+  }
+  .hamburger-line {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--text-color);
+    border-radius: 2px;
+    transition: transform 0.3s, opacity 0.3s;
+  }
+  .mobile-menu-btn.open .hamburger-line:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+  .mobile-menu-btn.open .hamburger-line:nth-child(2) {
+    opacity: 0;
+  }
+  .mobile-menu-btn.open .hamburger-line:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  @media (max-width: 600px) {
+    .nav-links {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 200px;
+      height: 100vh;
+      background: var(--card-bg);
+      flex-direction: column;
+      padding: 60px 30px 30px;
+      gap: 20px;
+      box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+      transition: right 0.3s ease;
+    }
+    .nav-links.open {
+      right: 0;
+    }
+    .nav-links a {
+      font-size: 1.2rem;
+      opacity: 1;
+    }
+    .mobile-menu-btn {
+      display: flex;
+    }
+  }
+
+  header {
+    text-align: center;
+    padding: 40px 0 20px 0;
+    position: relative;
+  }
+
+  /* Animated gradient background for header */
+  header::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    left: -50%;
+    right: -50%;
+    bottom: -20px;
+    background: linear-gradient(135deg, rgba(52,152,219,0.06) 0%, rgba(155,89,182,0.06) 25%, rgba(52,152,219,0.04) 50%, rgba(46,204,113,0.06) 75%, rgba(52,152,219,0.06) 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    z-index: -1;
+    border-radius: 0 0 50% 50% / 0 0 30px 30px;
+    pointer-events: none;
+  }
+
+  :global([data-theme='dark']) header::before {
+    background: linear-gradient(135deg, rgba(77,168,218,0.08) 0%, rgba(102,126,234,0.08) 25%, rgba(77,168,218,0.05) 50%, rgba(52,211,153,0.08) 75%, rgba(77,168,218,0.08) 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .avatar {
+    display: inline-block;
+    margin-bottom: 20px;
+  }
+  
+  .avatar img {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  h1 {
+    font-size: 2.2rem;
+    margin: 0;
+    color: var(--heading-color, #2c3e50);
+  }
+
+  .position {
+    font-size: 1.10rem;
+    margin: 10px 0 5px 0;
+    color: var(--text-secondary, #555);
+    min-height: 1.6em;
+  }
+
+  .typewriter-cursor {
+    display: inline-block;
+    color: var(--primary-color, #3498db);
+    animation: blink 0.8s infinite;
+    font-weight: 300;
+    margin-left: 1px;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  .affiliation-link {
+    text-decoration: none;
+  }
+  
+  .autocolor {
+    color: var(--primary-color, #3498db);
+    font-weight: 500;
+  }
+
+  .social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+  }
+
+  .social-icon {
+    font-size: 1.5rem;
+    color: var(--text-secondary, #555);
+    transition: color 0.3s, transform 0.3s;
+  }
+
+  .social-icon:hover {
+    color: var(--primary-color, #3498db);
+    transform: translateY(-2px);
+  }
+
+  .theme-toggle-btn {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    font-size: 1.15rem;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .theme-toggle-btn:hover {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  
+  /* Dark mode */
+  :global([data-theme='dark']) .nav-links a {
+    color: #ecf0f1;
+  }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const navLinks = document.querySelector('.nav-links');
+    if (menuBtn && navLinks) {
+      menuBtn.addEventListener('click', () => {
+        menuBtn.classList.toggle('open');
+        navLinks.classList.toggle('open');
+      });
+      // Close on link click
+      navLinks.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+          menuBtn.classList.remove('open');
+          navLinks.classList.remove('open');
+        });
+      });
+    }
+  });
+</script>

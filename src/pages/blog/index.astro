@@ -1,0 +1,223 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import siteData from '../../data/site.json';
+import '../../styles/blog.css';
+
+const allPosts = await getCollection('blog', ({ data }) => {
+  return data.draft !== true;
+});
+
+// Sort by date mostly recent first and prepare formatted data
+const sortedPosts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).map(post => {
+  const wordCount = post.body ? post.body.split(/\s+/).length : 0;
+  const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+  
+  return {
+    ...post,
+    formattedDate: new Date(post.data.date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }),
+    isoDate: new Date(post.data.date).toISOString(),
+    excerpt: post.body ? post.body.replace(/[#*>\_\`\[\]\-]/g, '').replace(/\n/g, ' ').slice(0, 200) + '...' : '',
+    readingTime
+  };
+});
+
+// Collect all unique tags
+const allTags = [...new Set(sortedPosts.flatMap(p => p.data.tags || []))].sort();
+---
+
+<BaseLayout title="Blog">
+  <header class="blog-header">
+    <nav class="blog-nav">
+      <a href="/" class="nav-home">
+        <i class="fas fa-home"></i> Home
+      </a>
+    </nav>
+    <div class="blog-title-section">
+      <h1 class="blog-page-title">Blog</h1>
+      <p class="blog-description">Thoughts on research, life, and everything in between.</p>
+    </div>
+  </header>
+
+  <div class="blog-controls">
+    <div class="search-container">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" id="blog-search" placeholder="Search posts..." aria-label="Search blog posts" />
+    </div>
+
+    {allTags.length > 0 && (
+      <div class="tag-filter-bar">
+        <button class="tag-filter-btn active" data-tag="all">All</button>
+        {allTags.map(tag => (
+          <button class="tag-filter-btn" data-tag={tag}>{tag}</button>
+        ))}
+      </div>
+    )}
+  </div>
+
+  <main class="blog-content">
+    <div class="posts-list">
+      {sortedPosts.length ? (
+        sortedPosts.map(post => (
+          <article class="post-card reveal" data-tags={JSON.stringify(post.data.tags || [])}>
+            <a href={`/blog/${post.slug}`} class="post-card-link">
+              <div class="post-card-content">
+                <h2 class="post-card-title">{post.data.title}</h2>
+                <div class="post-card-meta">
+                  <time datetime={post.isoDate}>
+                    <i class="far fa-calendar-alt"></i>
+                    {post.formattedDate}
+                  </time>
+                  <span class="reading-time">
+                    <i class="far fa-clock"></i>
+                    {post.readingTime} min read
+                  </span>
+                  {post.data.tags && post.data.tags.length ? (
+                    <span class="post-card-tags">
+                      {post.data.tags.slice(0, 3).map((tag) => (
+                        <span class="tag">{tag}</span>
+                      ))}
+                    </span>
+                  ) : null}
+                </div>
+                <p class="post-card-excerpt">
+                  {post.excerpt}
+                </p>
+              </div>
+              <span class="post-card-arrow"><i class="fas fa-arrow-right"></i></span>
+            </a>
+          </article>
+        ))
+      ) : (
+        <div class="no-posts">
+          <div class="no-posts-icon">📝</div>
+          <h2>No posts yet</h2>
+          <p>Check back soon for new content!</p>
+        </div>
+      )}
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .blog-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: 0 0 25px 0;
+    padding: 0 20px;
+  }
+
+  .search-container {
+    position: relative;
+    max-width: 500px;
+    width: 100%;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+  }
+
+  #blog-search {
+    width: 100%;
+    padding: 12px 15px 12px 40px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    color: var(--text-color);
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  }
+
+  #blog-search:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(77, 168, 218, 0.2);
+  }
+
+  .tag-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag-filter-btn {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 5px 14px;
+    border-radius: 18px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+  }
+
+  .tag-filter-btn:hover {
+    background: var(--bg-hover);
+  }
+
+  .tag-filter-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+  }
+</style>
+
+<script>
+  function initBlogFilters() {
+    const tagBtns = document.querySelectorAll('.tag-filter-btn');
+    const postCards = document.querySelectorAll('.post-card');
+    const searchInput = document.getElementById('blog-search');
+    let activeTag = 'all';
+
+    function filterPosts() {
+      const query = searchInput ? (searchInput as HTMLInputElement).value.toLowerCase() : '';
+
+      postCards.forEach(card => {
+        const el = card as HTMLElement;
+        const tags = JSON.parse(el.dataset.tags || '[]');
+        const title = el.querySelector('.post-card-title')?.textContent?.toLowerCase() || '';
+        const excerpt = el.querySelector('.post-card-excerpt')?.textContent?.toLowerCase() || '';
+        
+        const matchesTag = activeTag === 'all' || tags.includes(activeTag);
+        const matchesSearch = title.includes(query) || excerpt.includes(query);
+
+        if (matchesTag && matchesSearch) {
+          el.style.display = '';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+    }
+
+    if (tagBtns.length > 0) {
+      tagBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          activeTag = (btn as HTMLElement).dataset.tag || 'all';
+          tagBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          filterPosts();
+        });
+      });
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('input', filterPosts);
+    }
+  }
+
+  // Initialize on page load and view transitions
+  initBlogFilters();
+  document.addEventListener('astro:after-swap', initBlogFilters);
+</script>

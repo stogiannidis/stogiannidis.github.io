@@ -1,0 +1,148 @@
+---
+import siteData from '../data/site.json';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonicalURL?: string | URL;
+  type?: 'website' | 'article';
+}
+
+const {
+  title,
+  description = siteData.description,
+  image = siteData.avatar,
+  canonicalURL = new URL(Astro.url.pathname, Astro.site),
+  type = 'website',
+} = Astro.props;
+
+const pageTitle = title ? `${title} | ${siteData.title}` : `${siteData.title} | ${siteData.affiliation}`;
+const ogImageUrl = new URL(image, Astro.site);
+---
+
+<!-- Global Metadata -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="icon" type="image/png" href={siteData.favicon} />
+<meta name="generator" content={Astro.generator} />
+<meta name="theme-color" content="#1a1a2e" />
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalURL} />
+<link rel="alternate" type="application/rss+xml" title="Ilias Stogiannidis — Blog" href="/rss.xml" />
+
+<!-- Primary Meta Tags -->
+<title>{pageTitle}</title>
+<meta name="title" content={pageTitle} />
+<meta name="description" content={description} />
+<meta name="keywords" content={siteData.keywords} />
+<meta name="author" content={siteData.title} />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={type} />
+<meta property="og:url" content={Astro.url} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImageUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content={siteData.title} />
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={Astro.url} />
+<meta property="twitter:title" content={pageTitle} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={ogImageUrl} />
+<meta property="twitter:creator" content="@istogiannidis" />
+
+<!-- Fonts & Icons — preconnect + preload for performance -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+
+<!-- Structured Data (JSON-LD) -->
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": siteData.title,
+  "url": siteData.url,
+  "jobTitle": siteData.position,
+  "affiliation": {
+    "@type": "Organization",
+    "name": siteData.affiliation,
+    "url": siteData.affiliation_link
+  },
+  "sameAs": [
+    siteData.google_scholar,
+    siteData.github_link,
+    siteData.linkedin,
+    siteData.twitter
+  ].filter(Boolean)
+})} />
+
+<!-- Theme Script to prevent flash of wrong theme (also handles View Transitions) -->
+<script is:inline>
+  var darkVars = {
+    '--bg-color': '#1a1a2e', '--bg-secondary': '#16213e', '--bg-hover': '#293241',
+    '--text-color': '#e0e0e0', '--text-secondary': '#b0b0b0', '--heading-color': '#ffffff',
+    '--primary-color': '#4da8da', '--primary-hover': '#3b8bb8', '--border-color': '#2e3b4e',
+    '--card-bg': '#222831', '--card-shadow': '0 4px 15px rgba(0,0,0,0.3)',
+    '--card-hover-shadow': '0 8px 25px rgba(0,0,0,0.5)',
+    '--badge-bg': 'linear-gradient(135deg, #4b6cb7 0%, #182848 100%)', '--badge-text': '#ffffff'
+  };
+
+  function getStoredTheme() {
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+      return localStorage.getItem('theme');
+    }
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    return 'light';
+  }
+
+  function applyThemeToDoc(doc) {
+    var theme = getStoredTheme();
+    var el = doc.documentElement;
+    if (theme === 'dark') {
+      el.setAttribute('data-theme', 'dark');
+      for (var k in darkVars) el.style.setProperty(k, darkVars[k]);
+    } else {
+      el.removeAttribute('data-theme');
+      for (var k in darkVars) el.style.removeProperty(k);
+    }
+  }
+
+  function syncToggleButton() {
+    var theme = getStoredTheme();
+    var btn = document.getElementById('theme-toggle');
+    if (btn) {
+      var icon = btn.querySelector('.theme-icon');
+      var isDark = theme === 'dark';
+      if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+    }
+  }
+
+  // Apply on initial load
+  applyThemeToDoc(document);
+
+  // Apply theme to INCOMING document before swap
+  document.addEventListener('astro:before-swap', function(ev) {
+    applyThemeToDoc({ documentElement: ev.newDocument.documentElement });
+  });
+
+  // After swap, re-apply and sync button
+  document.addEventListener('astro:after-swap', function() {
+    applyThemeToDoc(document);
+    syncToggleButton();
+  });
+</script>
+
+<!-- Analytics: Uncomment and set your domain to enable Plausible -->
+<!-- <script defer data-domain="stogiannidis.github.io" src="https://plausible.io/js/script.js"></script> -->

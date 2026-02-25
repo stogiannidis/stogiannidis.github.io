@@ -1,0 +1,26 @@
+[
+	{
+		"role": "PhD Student",
+		"org": "The University of Edinburgh",
+		"orgLink": "https://vios.science",
+		"period": "2024 – Present",
+		"icon": "🎓",
+		"description": "Researching spatial and temporal reasoning in foundational models, under Prof. Sotos Tsaftaris and Dr. Steven McDonagh."
+	},
+	{
+		"role": "Applied ML Researcher",
+		"org": "helvia.ai",
+		"orgLink": "https://helvia.ai",
+		"period": "2022 – 2024",
+		"icon": "🤖",
+		"description": "Specializing in Natural Language Processing and Large Language Models. Developed cost-aware teacher-student frameworks."
+	},
+	{
+		"role": "MSc in Computer Science",
+		"org": "Athens University of Economics and Business",
+		"orgLink": "https://www.aueb.gr",
+		"period": "2022 – 2023",
+		"icon": "📜",
+		"description": "Supervised by Prof. Ion Androutsopoulos. Active member of the NLP Group at AUEB."
+	}
+]

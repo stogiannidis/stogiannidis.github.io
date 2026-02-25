@@ -1,0 +1,268 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import siteData from '../data/site.json';
+import '../styles/blog.css';
+
+const { frontmatter } = Astro.props;
+
+const pageTitle = frontmatter.title;
+const formattedDate = new Date(frontmatter.date).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+
+const pageUrl = `${siteData.url}${Astro.url.pathname}`;
+---
+
+<BaseLayout title={pageTitle}>
+  <div id="reading-progress"></div>
+  <header class="blog-header">
+    <nav class="blog-nav">
+      <a href="/" class="nav-home">
+        <i class="fas fa-home"></i> Home
+      </a>
+      <a href="/blog" class="nav-blog">
+        <i class="fas fa-list"></i> All Posts
+      </a>
+    </nav>
+  </header>
+
+  <article class="blog-post">
+    <header class="post-header">
+      <h1 class="post-title">{frontmatter.title}</h1>
+      <div class="post-meta">
+        <time datetime={new Date(frontmatter.date).toISOString()}>
+          <i class="far fa-calendar-alt"></i>
+          {formattedDate}
+        </time>
+        {frontmatter.tags && frontmatter.tags.length > 0 && (
+          <span class="post-tags">
+            <i class="fas fa-tags"></i>
+            {frontmatter.tags.map((tag: string) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </span>
+        )}
+        {frontmatter.reading_time && (
+          <span class="reading-time">
+            <i class="far fa-clock"></i>
+            {frontmatter.reading_time} min read
+          </span>
+        )}
+      </div>
+    </header>
+
+    <!-- Table of Contents (auto-generated) -->
+    <nav id="toc" class="toc-container" aria-label="Table of Contents">
+      <details>
+        <summary class="toc-toggle"><i class="fas fa-list-ol"></i> Table of Contents</summary>
+        <ol id="toc-list" class="toc-list"></ol>
+      </details>
+    </nav>
+
+    <div class="post-content">
+      <slot />
+    </div>
+
+    <!-- Share buttons -->
+    <div class="share-section">
+      <span class="share-label">Share this post:</span>
+      <div class="share-buttons">
+        <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(pageTitle)}&url=${encodeURIComponent(pageUrl)}`} target="_blank" rel="noopener noreferrer" class="share-btn twitter-share" aria-label="Share on Twitter">
+          <i class="fab fa-x-twitter"></i>
+        </a>
+        <a href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(pageUrl)}&title=${encodeURIComponent(pageTitle)}`} target="_blank" rel="noopener noreferrer" class="share-btn linkedin-share" aria-label="Share on LinkedIn">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+        <button class="share-btn copy-link-btn" data-url={pageUrl} aria-label="Copy link">
+          <i class="fas fa-link"></i>
+        </button>
+      </div>
+    </div>
+
+    <footer class="post-footer">
+      <div class="post-author">
+        {siteData.avatar && (
+            <img src={siteData.avatar} alt={siteData.title} class="author-avatar" />
+        )}
+        <div class="author-info">
+          <strong>{siteData.title}</strong>
+          <span>{siteData.position}</span>
+        </div>
+      </div>
+    </footer>
+  </article>
+
+  <style>
+    #reading-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary-color, #3498db), #9b59b6);
+      z-index: 9999;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* Table of Contents */
+    .toc-container {
+      margin: 20px 0 30px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .toc-toggle {
+      cursor: pointer;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--heading-color);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+      list-style: none;
+    }
+
+    .toc-toggle::-webkit-details-marker { display: none; }
+
+    .toc-list {
+      padding: 0 18px 15px 35px;
+      margin: 0;
+      list-style: decimal;
+    }
+
+    .toc-list li {
+      margin: 6px 0;
+    }
+
+    .toc-list a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .toc-list a:hover {
+      text-decoration: underline;
+    }
+
+    /* Share buttons */
+    .share-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 0;
+      margin-top: 30px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .share-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .share-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .share-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .share-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .twitter-share {
+      background: #1da1f2;
+      color: white;
+    }
+
+    .linkedin-share {
+      background: #0077b5;
+      color: white;
+    }
+
+    .copy-link-btn {
+      background: var(--bg-secondary);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+    }
+
+    .copy-link-btn.copied {
+      background: #27ae60;
+      color: white;
+      border-color: #27ae60;
+    }
+  </style>
+
+  <script>
+    // Reading progress bar
+    const bar = document.getElementById('reading-progress');
+    if (bar) {
+      window.addEventListener('scroll', () => {
+        const h = document.documentElement.scrollHeight - window.innerHeight;
+        if (h > 0) bar.style.width = (window.scrollY / h * 100) + '%';
+      }, { passive: true });
+    }
+
+    // Auto-generate TOC from headings
+    const tocList = document.getElementById('toc-list');
+    const content = document.querySelector('.post-content');
+    if (tocList && content) {
+      const headings = content.querySelectorAll('h2, h3');
+      if (headings.length > 0) {
+        headings.forEach((h, i) => {
+          if (!h.id) h.id = `heading-${i}`;
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = `#${h.id}`;
+          a.textContent = h.textContent;
+          if (h.tagName === 'H3') li.style.marginLeft = '18px';
+          li.appendChild(a);
+          tocList.appendChild(li);
+        });
+      } else {
+        const toc = document.getElementById('toc');
+        if (toc) toc.style.display = 'none';
+      }
+    }
+
+    // Copy link button
+    document.querySelectorAll('.copy-link-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const url = (btn as HTMLElement).dataset.url || window.location.href;
+        try {
+          await navigator.clipboard.writeText(url);
+        } catch {
+          const ta = document.createElement('textarea');
+          ta.value = url; document.body.appendChild(ta); ta.select();
+          document.execCommand('copy'); document.body.removeChild(ta);
+        }
+        btn.classList.add('copied');
+        const icon = btn.querySelector('i');
+        if (icon) { icon.className = 'fas fa-check'; }
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          if (icon) { icon.className = 'fas fa-link'; }
+        }, 2000);
+      });
+    });
+  </script>
+</BaseLayout>

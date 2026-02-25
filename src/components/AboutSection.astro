@@ -1,0 +1,80 @@
+---
+---
+<h2>About Me</h2>
+
+<p>
+  My name is Ilias (pronounced “ee-lee-ahs” or “ee-ly-ahs”), and I’m a PhD student at The University of Edinburgh. I’m part of the <a href="https://vios.science/" target="_blank" rel="noopener noreferrer">Vios Science Lab</a> under the guidance of Prof. <a href="https://www.eng.ed.ac.uk/about/people/dr-sotirios-tsaftaris" target="_blank" rel="noopener noreferrer">Sotos Tsaftaris</a> and Dr. <a href="https://smcdonagh.github.io/" target="_blank" rel="noopener noreferrer">Steven McDonagh</a>.
+</p>
+
+<p>
+  Before embarking on my PhD, I completed my MSc in Computer Science at Athens University of Economics and Business (AUEB). I was supervised by Prof. <a href="https://www2.aueb.gr/users/ion/" target="_blank" rel="noopener noreferrer">Ion Androutsopoulos</a>. Furthermore, I had the opportunity to work as an Applied Machine Learning Researcher at <a href="https://helvia.ai/" target="_blank" rel="noopener noreferrer">helvia.ai</a>, specializing in Natural Language Processing and Large Language Models.
+</p>
+
+<p>
+  I’m also an active member of the <a href="http://nlp.cs.aueb.gr/" target="_blank" rel="noopener noreferrer">NLP Group</a> at AUEB, where we conduct research in NLP and Machine Learning.
+</p>
+
+<div class="contact-section">
+  <div class="time-widget">
+    <span class="time-label">Current time in Edinburgh:</span>
+    <span id="current-time" class="time-display">--:--</span>
+  </div>
+  <div class="collaboration-cta">
+    <p>Feel free to reach out to me if you are interested in collaborating or if you have any questions about my research!</p>
+  </div>
+</div>
+
+<script>
+  function updateTime() {
+    const el = document.getElementById('current-time');
+    if (!el) return;
+    const now = new Date();
+    // Using Europe/London for Edinburgh
+    const options: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/London' };
+    el.textContent = now.toLocaleTimeString([], options);
+  }
+  updateTime();
+  setInterval(updateTime, 60000);
+</script>
+
+<style>
+  .contact-section {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-color) 100%);
+    border-radius: 15px;
+    padding: 25px;
+    margin: 30px 0;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+  }
+
+  .time-widget {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .time-label {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-right: 10px;
+  }
+
+  .time-display {
+    font-weight: bold;
+    font-size: 1.3rem;
+    color: var(--primary-color);
+    background: var(--bg-hover);
+    padding: 8px 16px;
+    border-radius: 20px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+  }
+
+  .collaboration-cta {
+    text-align: center;
+  }
+
+  .collaboration-cta p {
+    margin: 0;
+    font-size: 1.05rem;
+    color: var(--text-color);
+  }
+</style>

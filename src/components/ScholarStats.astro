@@ -1,0 +1,61 @@
+---
+import siteData from '../data/site.json';
+---
+
+<div class="scholar-stats">
+  <a href={siteData.google_scholar} target="_blank" rel="noopener noreferrer" class="stat-card">
+    <span class="stat-number">{siteData.scholar_citations}</span>
+    <span class="stat-label">Citations</span>
+  </a>
+  <a href={siteData.google_scholar} target="_blank" rel="noopener noreferrer" class="stat-card">
+    <span class="stat-number">{siteData.scholar_h_index}</span>
+    <span class="stat-label">h-index</span>
+  </a>
+  <a href={siteData.google_scholar} target="_blank" rel="noopener noreferrer" class="stat-card">
+    <span class="stat-number">{siteData.scholar_papers}</span>
+    <span class="stat-label">Papers</span>
+  </a>
+</div>
+
+<style>
+  .scholar-stats {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 15px 0 5px 0;
+  }
+
+  .stat-card {
+    text-decoration: none;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 10px 18px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    min-width: 70px;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-hover-shadow);
+    border-color: var(--primary-color);
+  }
+
+  .stat-number {
+    display: block;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1.2;
+  }
+
+  .stat-label {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+</style>

@@ -1,0 +1,73 @@
+---
+const news = [
+  { date: 'Dec. 2024', content: 'Visiting AUEB (20th) to give a talk about pursuing a PhD abroad.', highlight: true },
+  { date: 'Aug. 2024', content: 'Started PhD at The University of Edinburgh.', highlight: false },
+  { date: 'Dec. 2023', content: 'MSc thesis available on NLP Group website.', highlight: false },
+  { date: 'Nov. 2023', content: 'Poster presentation at EMNLP 2023 (Singapore).', highlight: false },
+  { date: 'Oct. 2023', content: 'Thesis under final review.', highlight: false },
+  { date: 'Oct. 2023', content: 'LLM caching paper accepted to Findings of EMNLP 2023.', highlight: false },
+];
+---
+<h2>News</h2>
+
+<div class="news-timeline">
+  {news.map(item => (
+    <div class={`news-item reveal ${item.highlight ? 'highlight' : ''}`}>
+      <div class="news-date">{item.date}</div>
+      <div class="news-content">{item.content}</div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .news-timeline {
+    margin: 30px 0;
+    position: relative;
+  }
+
+  .news-item {
+    display: flex;
+    margin-bottom: 25px;
+    padding: 20px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-left: 4px solid var(--primary-color);
+  }
+
+  .news-item:hover {
+    transform: translateX(8px);
+    box-shadow: var(--card-hover-shadow);
+  }
+
+  .news-item.highlight {
+    border-left-color: #ff6b6b;
+    background: var(--bg-secondary);
+  }
+
+  .news-date {
+    min-width: 100px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-right: 20px;
+    align-self: flex-start;
+  }
+
+  .news-content {
+    flex: 1;
+    line-height: 1.6;
+    color: var(--text-color);
+  }
+
+  @media (max-width: 768px) {
+    .news-item {
+      flex-direction: column;
+    }
+    .news-date {
+      margin-bottom: 10px;
+      margin-right: 0;
+    }
+  }
+</style>

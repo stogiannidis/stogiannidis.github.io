@@ -1,0 +1,38 @@
+[
+	{
+		"title": "Cache me if you Can: an Online Cost-aware Teacher-Student framework to Reduce the Calls to Large Language Models",
+		"authors": "Ilias Stogiannidis, Stavros Vassos, Prodromos Malakasiotis, Ion Androutsopoulos",
+		"conference_short": "EMNLP2023",
+		"conference": "In Findings of the Conference on Empirical Methods in Natural Language Processing <strong>(EMNLP)</strong>, 2023.",
+		"pdf": "https://arxiv.org/abs/2310.13395",
+		"code": "https://github.com/stoyian/OCaTS",
+		"bibtex": "@inproceedings{stogiannidis2023cache,\n  title={Cache me if you Can: an Online Cost-aware Teacher-Student framework to Reduce the Calls to Large Language Models},\n  author={Stogiannidis, Ilias and Vassos, Stavros and Malakasiotis, Prodromos and Androutsopoulos, Ion},\n  booktitle={Findings of the Association for Computational Linguistics: EMNLP 2023},\n  year={2023}\n}",
+		"page": "https://helvia.ai/labs",
+		"notes": "Poster Presentation",
+		"image": "/img/architecture_new.png",
+		"selected": true
+	},
+	{
+		"title": "Making LLMs Worth Every Penny: Resource-Limited Text Classification in Finance",
+		"authors": "Lefteris Loukas, Ilias Stogiannidis, Odysseas Diamantopoulos-Pantaleon, Stavros Vassos, Prodromos Malakasiotis",
+		"conference_short": "ICAIF2023",
+		"conference": "In Proceedings of the 4th ACM International Conference on AI in Finance <strong>(ICAIF)</strong>, New York, NY, USA, 2023.",
+		"pdf": "/files/LLMPenny.pdf",
+		"page": "https://helvia.ai/labs/making-llms-worth-every-penny-resource-limited-text-classification-in-banking/",
+		"bibtex": "@inproceedings{loukas2023making,\n  title={Making LLMs Worth Every Penny: Resource-Limited Text Classification in Finance},\n  author={Loukas, Lefteris and Stogiannidis, Ilias and Diamantopoulos-Pantaleon, Odysseas and Vassos, Stavros and Malakasiotis, Prodromos},\n  booktitle={Proceedings of the 4th ACM International Conference on AI in Finance},\n  year={2023}\n}",
+		"notes": "Oral Presentation",
+		"image": "/img/LLM.png",
+		"selected": true
+	},
+	{
+		"title": "Breaking the Bank with ChatGPT: Few-Shot Text Classification for Finance",
+		"authors": "Lefteris Loukas, Ilias Stogiannidis, Stavros Vassos, Prodromos Malakasiotis",
+		"conference_short": "FINNLP2023",
+		"conference": "In Proceedings of the Fifth Workshop on Financial Technology and Natural Language Processing and the Second Multimodal AI For Financial Forecasting of the International Joint Conference on Artificial Intelligence <strong>(IJCAI)</strong>, Macao, China, 2023.",
+		"pdf": "https://aclanthology.org/2023.finnlp-1.7.pdf",
+		"bibtex": "@inproceedings{loukas2023breaking,\n  title={Breaking the Bank with ChatGPT: Few-Shot Text Classification for Finance},\n  author={Loukas, Lefteris and Stogiannidis, Ilias and Vassos, Stavros and Malakasiotis, Prodromos},\n  booktitle={Proceedings of the Fifth Workshop on Financial Technology and Natural Language Processing},\n  year={2023}\n}",
+		"notes": "Oral Presentation",
+		"image": "/img/BRBANK.png",
+		"selected": false
+	}
+]

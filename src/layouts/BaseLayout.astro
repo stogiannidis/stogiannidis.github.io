@@ -1,0 +1,102 @@
+---
+import { ViewTransitions } from 'astro:transitions';
+import SEOHead from '../components/SEOHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BackgroundAnimation from '../components/BackgroundAnimation.astro';
+import '../styles/global.css';
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<html lang="en-US">
+  <head>
+    <SEOHead title={title} description={description} />
+    <ViewTransitions />
+  </head>
+  <body>
+    <BackgroundAnimation />
+    <!-- Skip to content link for accessibility -->
+    <a href="#main" class="skip-link">Skip to content</a>
+    <div class="wrapper">
+      <Header />
+      <section id="main" class="prose-area">
+        <slot />
+      </section>
+      <Footer />
+    </div>
+    
+    <!-- Back to top button -->
+    <button id="back-to-top" class="back-to-top" aria-label="Back to top" title="Back to top">
+      <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <script>
+      // Intersection Observer for scroll-reveal animations
+      function initReveals() {
+        if (!('IntersectionObserver' in window)) return;
+        const revealSel = '.research-card, .news-item, .enhanced-pub-card, .exp-item, .post-card, .timeline-item';
+        document.querySelectorAll(revealSel).forEach(el => { el.classList.add('reveal'); });
+        const obs = new IntersectionObserver(entries => {
+          entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); obs.unobserve(en.target); } });
+        }, { threshold: 0.15 });
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+      }
+
+      // Back to top button
+      function initBackToTop() {
+        const btn = document.getElementById('back-to-top');
+        if (!btn) return;
+        window.addEventListener('scroll', () => {
+          btn.classList.toggle('visible', window.scrollY > 400);
+        }, { passive: true });
+        btn.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+
+      // Copy code blocks
+      function initCodeCopy() {
+        document.querySelectorAll('pre').forEach(pre => {
+          if (pre.querySelector('.code-copy-btn')) return;
+          const btn = document.createElement('button');
+          btn.className = 'code-copy-btn';
+          btn.innerHTML = '<i class="fas fa-copy"></i>';
+          btn.title = 'Copy code';
+          btn.addEventListener('click', async () => {
+            const code = pre.querySelector('code');
+            const text = code ? code.textContent || '' : pre.textContent || '';
+            try {
+              await navigator.clipboard.writeText(text);
+            } catch {
+              const ta = document.createElement('textarea');
+              ta.value = text; document.body.appendChild(ta); ta.select();
+              document.execCommand('copy'); document.body.removeChild(ta);
+            }
+            btn.innerHTML = '<i class="fas fa-check"></i>';
+            btn.classList.add('copied');
+            setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i>'; btn.classList.remove('copied'); }, 2000);
+          });
+          pre.style.position = 'relative';
+          pre.appendChild(btn);
+        });
+      }
+
+      // Init all on page load and after view transitions
+      initReveals();
+      initBackToTop();
+      initCodeCopy();
+
+      document.addEventListener('astro:after-swap', () => {
+        initReveals();
+        initBackToTop();
+        initCodeCopy();
+      });
+    </script>
+  </body>
+</html>

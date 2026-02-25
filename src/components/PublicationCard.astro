@@ -1,0 +1,223 @@
+---
+export interface Props {
+  pub: {
+    title: string;
+    authors: string;
+    conference_short?: string;
+    conference: string;
+    pdf?: string;
+    code?: string;
+    bibtex?: string;
+    page?: string;
+    notes?: string;
+    image?: string;
+    selected?: boolean;
+  };
+}
+
+const { pub } = Astro.props;
+---
+
+<div class="enhanced-pub-card reveal" data-selected={pub.selected ? 'true' : 'false'}>
+  <div class="pub-grid">
+    {pub.image && (
+      <div class="pub-image-container">
+        <img src={pub.image} alt={`${pub.title} thumbnail`} loading="lazy" />
+        {pub.conference_short && (
+          <div class="enhanced-badge">{pub.conference_short}</div>
+        )}
+      </div>
+    )}
+    
+    <div class="pub-details">
+      <div class="pub-title">
+        <a href={pub.pdf || pub.page || '#'} target="_blank" rel="noopener noreferrer">{pub.title}</a>
+      </div>
+      <div class="pub-authors" set:html={pub.authors} />
+      <div class="pub-venue"><em><Fragment set:html={pub.conference} /></em></div>
+      
+      <div class="pub-links">
+        {pub.pdf && <a href={pub.pdf} class="btn pdf-btn" target="_blank" rel="noopener noreferrer">PDF</a>}
+        {pub.code && <a href={pub.code} class="btn code-btn" target="_blank" rel="noopener noreferrer">Code</a>}
+        {pub.page && <a href={pub.page} class="btn page-btn" target="_blank" rel="noopener noreferrer">Project Page</a>}
+        {pub.bibtex && <button class="btn bibtex-btn" data-bibtex={pub.bibtex} type="button">BibTeX</button>}
+        {pub.notes && <span class="pub-note">{pub.notes}</span>}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .enhanced-pub-card {
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .enhanced-pub-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+  }
+
+  .enhanced-pub-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--card-hover-shadow);
+  }
+
+  .pub-grid {
+    display: flex;
+    gap: 25px;
+    align-items: flex-start;
+  }
+
+  .pub-image-container {
+    flex: 0 0 160px;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .pub-image-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  .enhanced-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: var(--badge-bg);
+    color: var(--badge-text);
+    border-radius: 12px;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  .pub-details {
+    flex: 1;
+  }
+
+  .pub-title a {
+    color: var(--heading-color);
+    font-weight: 600;
+    font-size: 1.15rem;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .pub-title a:hover {
+    color: var(--primary-color);
+  }
+
+  .pub-authors {
+    color: var(--text-color);
+    margin: 8px 0;
+    font-size: 0.95rem;
+  }
+  
+  /* Bold author's own name, a common convention handled in HTML strings sometimes, 
+     if using <strong> tags it will inherit this color */
+  .pub-authors :global(strong) {
+    color: var(--heading-color);
+    font-weight: 600;
+  }
+
+  .pub-venue {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+  }
+
+  .pub-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .btn {
+    text-decoration: none !important;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .pdf-btn { background: #e74c3c; color: white !important; }
+  .code-btn { background: #27ae60; color: white !important; }
+  .page-btn { background: #3498db; color: white !important; }
+  .bibtex-btn { background: #9b59b6; color: white !important; cursor: pointer; border: none; font-family: inherit; }
+  .bibtex-btn.copied { background: #27ae60; }
+
+  .pub-note {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+  }
+
+  @media (max-width: 768px) {
+    .pub-grid {
+      flex-direction: column;
+    }
+    .pub-image-container {
+      flex: 0 0 auto;
+      width: 100%;
+      max-width: 300px;
+    }
+  }
+</style>
+
+<script>
+  // BibTeX copy-to-clipboard
+  document.querySelectorAll('.bibtex-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const bib = btn.getAttribute('data-bibtex');
+      if (!bib) return;
+      try {
+        await navigator.clipboard.writeText(bib);
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+      } catch {
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = bib; document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+        document.body.removeChild(ta);
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+      }
+    });
+  });
+</script>

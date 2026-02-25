@@ -1,0 +1,419 @@
+---
+---
+<!--
+  Animated floating background with research-themed shapes:
+  robots, brains, eyes, clocks, compasses, gears, and text symbols.
+-->
+<canvas id="bg-canvas" transition:persist="bg-canvas"></canvas>
+
+<style>
+  #bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  (function () {
+    const canvas = document.getElementById('bg-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let mouseX = width / 2;
+    let mouseY = height / 2;
+    let animationId;
+    let shapes = [];
+
+    const SHAPE_COUNT = 18;
+
+    function isDark() {
+      return document.documentElement.getAttribute('data-theme') === 'dark';
+    }
+
+    function getBgColor() {
+      return isDark() ? '#1a1a2e' : '#ffffff';
+    }
+
+    function getColorSets() {
+      if (isDark()) {
+        return [
+          { main: 'rgba(77,168,218,', accent: 'rgba(255,107,107,', outline: 'rgba(100,160,220,' },
+          { main: 'rgba(140,120,200,', accent: 'rgba(251,191,36,', outline: 'rgba(140,120,200,' },
+          { main: 'rgba(52,211,153,', accent: 'rgba(244,114,182,', outline: 'rgba(100,200,170,' },
+          { main: 'rgba(251,146,60,', accent: 'rgba(96,165,250,', outline: 'rgba(200,140,100,' },
+        ];
+      }
+      return [
+        { main: 'rgba(52,152,219,', accent: 'rgba(231,76,60,', outline: 'rgba(60,120,180,' },
+        { main: 'rgba(139,92,246,', accent: 'rgba(245,158,11,', outline: 'rgba(100,80,160,' },
+        { main: 'rgba(16,185,129,', accent: 'rgba(236,72,153,', outline: 'rgba(60,160,130,' },
+        { main: 'rgba(249,115,22,', accent: 'rgba(59,130,246,', outline: 'rgba(160,110,60,' },
+      ];
+    }
+
+    // ── Shape drawing functions ──
+
+    function drawRobot(ctx, s, colors, op) {
+      ctx.globalAlpha = op;
+      const c = colors;
+      // Antenna
+      ctx.strokeStyle = c.outline + '0.7)';
+      ctx.lineWidth = s * 0.05;
+      ctx.beginPath(); ctx.moveTo(0, -s * 0.5); ctx.lineTo(0, -s * 0.68); ctx.stroke();
+      ctx.beginPath(); ctx.arc(0, -s * 0.72, s * 0.05, 0, Math.PI * 2);
+      ctx.fillStyle = c.accent + '0.8)'; ctx.fill();
+      // Head
+      rRect(ctx, -s * 0.22, -s * 0.5, s * 0.44, s * 0.3, s * 0.06);
+      ctx.fillStyle = c.main + '0.35)'; ctx.fill();
+      ctx.strokeStyle = c.outline + '0.5)'; ctx.lineWidth = s * 0.03; ctx.stroke();
+      // Eyes
+      ctx.fillStyle = c.main + '0.9)';
+      ctx.beginPath(); ctx.arc(-s * 0.08, -s * 0.38, s * 0.04, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(s * 0.08, -s * 0.38, s * 0.04, 0, Math.PI * 2); ctx.fill();
+      // Body
+      rRect(ctx, -s * 0.25, -s * 0.18, s * 0.5, s * 0.4, s * 0.06);
+      ctx.fillStyle = c.main + '0.3)'; ctx.fill();
+      ctx.strokeStyle = c.outline + '0.5)'; ctx.lineWidth = s * 0.03; ctx.stroke();
+      // Panel
+      rRect(ctx, -s * 0.12, -s * 0.08, s * 0.24, s * 0.16, s * 0.03);
+      ctx.fillStyle = c.main + '0.15)'; ctx.fill();
+      // Buttons
+      ctx.beginPath(); ctx.arc(-s * 0.04, 0, s * 0.02, 0, Math.PI * 2);
+      ctx.fillStyle = c.accent + '0.7)'; ctx.fill();
+      ctx.beginPath(); ctx.arc(s * 0.04, 0, s * 0.02, 0, Math.PI * 2);
+      ctx.fillStyle = c.main + '0.7)'; ctx.fill();
+      // Arms
+      ctx.strokeStyle = c.outline + '0.45)'; ctx.lineWidth = s * 0.04; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(-s * 0.25, -s * 0.08); ctx.lineTo(-s * 0.38, s * 0.05); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(s * 0.25, -s * 0.08); ctx.lineTo(s * 0.38, s * 0.05); ctx.stroke();
+      // Legs
+      ctx.beginPath(); ctx.moveTo(-s * 0.1, s * 0.22); ctx.lineTo(-s * 0.12, s * 0.38); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(s * 0.1, s * 0.22); ctx.lineTo(s * 0.12, s * 0.38); ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+
+    function drawBrain(ctx, s, colors, op) {
+      // Brain — represents AI/neural networks
+      ctx.globalAlpha = op;
+      ctx.strokeStyle = colors.main + '0.5)';
+      ctx.lineWidth = s * 0.04;
+      ctx.fillStyle = colors.main + '0.2)';
+      // Left hemisphere
+      ctx.beginPath();
+      ctx.arc(-s * 0.08, -s * 0.05, s * 0.25, Math.PI * 0.5, Math.PI * 1.5);
+      ctx.bezierCurveTo(-s * 0.33, -s * 0.3, -s * 0.15, -s * 0.45, 0, -s * 0.35);
+      ctx.bezierCurveTo(-s * 0.05, -s * 0.15, -s * 0.15, 0, -s * 0.08, s * 0.2);
+      ctx.fill(); ctx.stroke();
+      // Right hemisphere
+      ctx.beginPath();
+      ctx.arc(s * 0.08, -s * 0.05, s * 0.25, Math.PI * 1.5, Math.PI * 0.5);
+      ctx.bezierCurveTo(s * 0.33, s * 0.2, s * 0.15, s * 0.05, 0, s * 0.2);
+      ctx.bezierCurveTo(s * 0.05, 0, s * 0.15, -s * 0.15, s * 0.08, -s * 0.3);
+      ctx.fill(); ctx.stroke();
+      // Folds (squiggly lines)
+      ctx.lineWidth = s * 0.02;
+      ctx.strokeStyle = colors.main + '0.4)';
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.18, -s * 0.15);
+      ctx.quadraticCurveTo(-s * 0.1, -s * 0.05, -s * 0.18, s * 0.05);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(s * 0.18, -s * 0.15);
+      ctx.quadraticCurveTo(s * 0.1, -s * 0.05, s * 0.18, s * 0.05);
+      ctx.stroke();
+      // Neural sparkle
+      ctx.beginPath(); ctx.arc(-s * 0.12, -s * 0.2, s * 0.025, 0, Math.PI * 2);
+      ctx.fillStyle = colors.accent + '0.6)'; ctx.fill();
+      ctx.beginPath(); ctx.arc(s * 0.1, 0, s * 0.02, 0, Math.PI * 2);
+      ctx.fillStyle = colors.accent + '0.5)'; ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    function drawEye(ctx, s, colors, op) {
+      // Eye — represents computer vision
+      ctx.globalAlpha = op;
+      // Outer eye shape
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.35, 0);
+      ctx.quadraticCurveTo(0, -s * 0.3, s * 0.35, 0);
+      ctx.quadraticCurveTo(0, s * 0.3, -s * 0.35, 0);
+      ctx.closePath();
+      ctx.fillStyle = colors.main + '0.15)';
+      ctx.fill();
+      ctx.strokeStyle = colors.main + '0.5)';
+      ctx.lineWidth = s * 0.035;
+      ctx.stroke();
+      // Iris
+      ctx.beginPath(); ctx.arc(0, 0, s * 0.14, 0, Math.PI * 2);
+      ctx.fillStyle = colors.main + '0.35)'; ctx.fill();
+      ctx.strokeStyle = colors.main + '0.5)'; ctx.lineWidth = s * 0.025; ctx.stroke();
+      // Pupil
+      ctx.beginPath(); ctx.arc(0, 0, s * 0.06, 0, Math.PI * 2);
+      ctx.fillStyle = colors.outline + '0.7)'; ctx.fill();
+      // Highlight
+      ctx.beginPath(); ctx.arc(s * 0.03, -s * 0.03, s * 0.025, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    function drawClock(ctx, s, colors, op, phase) {
+      // Clock — represents temporal reasoning
+      ctx.globalAlpha = op;
+      // Face
+      ctx.beginPath(); ctx.arc(0, 0, s * 0.3, 0, Math.PI * 2);
+      ctx.fillStyle = colors.main + '0.15)'; ctx.fill();
+      ctx.strokeStyle = colors.main + '0.5)'; ctx.lineWidth = s * 0.035; ctx.stroke();
+      // Hour ticks
+      for (let i = 0; i < 12; i++) {
+        const a = (i / 12) * Math.PI * 2 - Math.PI / 2;
+        const inner = s * 0.23;
+        const outer = s * 0.28;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(a) * inner, Math.sin(a) * inner);
+        ctx.lineTo(Math.cos(a) * outer, Math.sin(a) * outer);
+        ctx.strokeStyle = colors.main + '0.4)';
+        ctx.lineWidth = i % 3 === 0 ? s * 0.03 : s * 0.015;
+        ctx.stroke();
+      }
+      // Hour hand
+      const hAngle = phase * 0.5 - Math.PI / 2;
+      ctx.beginPath(); ctx.moveTo(0, 0);
+      ctx.lineTo(Math.cos(hAngle) * s * 0.15, Math.sin(hAngle) * s * 0.15);
+      ctx.strokeStyle = colors.outline + '0.6)'; ctx.lineWidth = s * 0.03; ctx.lineCap = 'round'; ctx.stroke();
+      // Minute hand
+      const mAngle = phase * 3 - Math.PI / 2;
+      ctx.beginPath(); ctx.moveTo(0, 0);
+      ctx.lineTo(Math.cos(mAngle) * s * 0.22, Math.sin(mAngle) * s * 0.22);
+      ctx.strokeStyle = colors.main + '0.5)'; ctx.lineWidth = s * 0.02; ctx.stroke();
+      // Center dot
+      ctx.beginPath(); ctx.arc(0, 0, s * 0.025, 0, Math.PI * 2);
+      ctx.fillStyle = colors.accent + '0.7)'; ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    function drawCompass(ctx, s, colors, op) {
+      // Compass — represents spatial reasoning
+      ctx.globalAlpha = op;
+      // Outer ring
+      ctx.beginPath(); ctx.arc(0, 0, s * 0.3, 0, Math.PI * 2);
+      ctx.fillStyle = colors.main + '0.12)'; ctx.fill();
+      ctx.strokeStyle = colors.main + '0.45)'; ctx.lineWidth = s * 0.03; ctx.stroke();
+      // Cardinal ticks
+      const dirs = [0, Math.PI / 2, Math.PI, Math.PI * 1.5];
+      dirs.forEach(a => {
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(a) * s * 0.24, Math.sin(a) * s * 0.24);
+        ctx.lineTo(Math.cos(a) * s * 0.3, Math.sin(a) * s * 0.3);
+        ctx.strokeStyle = colors.main + '0.5)'; ctx.lineWidth = s * 0.025; ctx.stroke();
+      });
+      // North needle (triangle)
+      ctx.beginPath();
+      ctx.moveTo(0, -s * 0.22);
+      ctx.lineTo(-s * 0.04, 0);
+      ctx.lineTo(s * 0.04, 0);
+      ctx.closePath();
+      ctx.fillStyle = colors.accent + '0.6)'; ctx.fill();
+      // South needle
+      ctx.beginPath();
+      ctx.moveTo(0, s * 0.22);
+      ctx.lineTo(-s * 0.04, 0);
+      ctx.lineTo(s * 0.04, 0);
+      ctx.closePath();
+      ctx.fillStyle = colors.main + '0.4)'; ctx.fill();
+      // Center
+      ctx.beginPath(); ctx.arc(0, 0, s * 0.03, 0, Math.PI * 2);
+      ctx.fillStyle = colors.outline + '0.6)'; ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    function drawGear(ctx, s, colors, op, rotation) {
+      // Gear — represents foundational models / engineering
+      ctx.globalAlpha = op;
+      const teeth = 8;
+      const outerR = s * 0.3;
+      const innerR = s * 0.22;
+      ctx.beginPath();
+      for (let i = 0; i < teeth; i++) {
+        const a1 = rotation + (i / teeth) * Math.PI * 2;
+        const a2 = rotation + ((i + 0.3) / teeth) * Math.PI * 2;
+        const a3 = rotation + ((i + 0.5) / teeth) * Math.PI * 2;
+        const a4 = rotation + ((i + 0.8) / teeth) * Math.PI * 2;
+        if (i === 0) ctx.moveTo(Math.cos(a1) * innerR, Math.sin(a1) * innerR);
+        ctx.lineTo(Math.cos(a2) * outerR, Math.sin(a2) * outerR);
+        ctx.lineTo(Math.cos(a3) * outerR, Math.sin(a3) * outerR);
+        ctx.lineTo(Math.cos(a4) * innerR, Math.sin(a4) * innerR);
+      }
+      ctx.closePath();
+      ctx.fillStyle = colors.main + '0.2)'; ctx.fill();
+      ctx.strokeStyle = colors.main + '0.45)'; ctx.lineWidth = s * 0.025; ctx.stroke();
+      // Inner hole
+      ctx.beginPath(); ctx.arc(0, 0, s * 0.1, 0, Math.PI * 2);
+      ctx.fillStyle = getBgColor(); ctx.fill();
+      ctx.strokeStyle = colors.main + '0.45)'; ctx.lineWidth = s * 0.025; ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+
+    function drawTextSymbol(ctx, s, colors, op) {
+      // Text lines — represents NLP
+      ctx.globalAlpha = op;
+      // Paper
+      rRect(ctx, -s * 0.22, -s * 0.3, s * 0.44, s * 0.6, s * 0.04);
+      ctx.fillStyle = colors.main + '0.12)'; ctx.fill();
+      ctx.strokeStyle = colors.main + '0.4)'; ctx.lineWidth = s * 0.025; ctx.stroke();
+      // Text lines
+      const lines = [
+        { y: -s * 0.18, w: s * 0.3 },
+        { y: -s * 0.08, w: s * 0.26 },
+        { y: s * 0.02, w: s * 0.32 },
+        { y: s * 0.12, w: s * 0.2 },
+      ];
+      lines.forEach(l => {
+        ctx.beginPath();
+        ctx.moveTo(-s * 0.14, l.y);
+        ctx.lineTo(-s * 0.14 + l.w, l.y);
+        ctx.strokeStyle = colors.main + '0.35)';
+        ctx.lineWidth = s * 0.025;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+      });
+      // Cursor blink
+      ctx.beginPath(); ctx.moveTo(s * 0.1, s * 0.12); ctx.lineTo(s * 0.1, s * 0.2);
+      ctx.strokeStyle = colors.accent + '0.5)'; ctx.lineWidth = s * 0.02; ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+
+    // Rounded rect helper
+    function rRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+    }
+
+    // shape types: robot, brain, eye, clock, compass, gear, text
+    const TYPES = ['robot', 'brain', 'eye', 'clock', 'compass', 'gear', 'text'];
+
+    class FloatingShape {
+      constructor() { this.reset(true); }
+
+      reset(initial) {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * 0.35;
+        this.vy = (Math.random() - 0.5) * 0.25;
+        this.size = 28 + Math.random() * 32;
+        this.opacity = 0.15 + Math.random() * 0.22;
+        this.rotation = (Math.random() - 0.5) * 0.4;
+        this.rotSpeed = (Math.random() - 0.5) * 0.004;
+        this.colorIdx = Math.floor(Math.random() * 4);
+        this.bobPhase = Math.random() * Math.PI * 2;
+        this.bobSpeed = 0.012 + Math.random() * 0.01;
+        this.bobAmount = 2 + Math.random() * 4;
+        this.type = TYPES[Math.floor(Math.random() * TYPES.length)];
+      }
+
+      update() {
+        const dx = this.x - mouseX;
+        const dy = this.y - mouseY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 200 && dist > 0) {
+          const force = (200 - dist) / 200 * 0.12;
+          this.vx += (dx / dist) * force;
+          this.vy += (dy / dist) * force;
+        }
+        this.vx *= 0.995;
+        this.vy *= 0.995;
+        this.x += this.vx;
+        this.y += this.vy;
+        this.rotation += this.rotSpeed;
+        this.bobPhase += this.bobSpeed;
+        if (this.x < -80) this.x = width + 80;
+        if (this.x > width + 80) this.x = -80;
+        if (this.y < -80) this.y = height + 80;
+        if (this.y > height + 80) this.y = -80;
+      }
+
+      draw() {
+        const palette = getColorSets();
+        const colors = palette[this.colorIdx % palette.length];
+        const bobY = Math.sin(this.bobPhase) * this.bobAmount;
+        ctx.save();
+        ctx.translate(this.x, this.y + bobY);
+        // Clocks and compasses look better without much rotation
+        if (this.type !== 'clock' && this.type !== 'compass') {
+          ctx.rotate(this.rotation);
+        }
+        switch (this.type) {
+          case 'robot': drawRobot(ctx, this.size, colors, this.opacity); break;
+          case 'brain': drawBrain(ctx, this.size, colors, this.opacity); break;
+          case 'eye': drawEye(ctx, this.size, colors, this.opacity); break;
+          case 'clock': drawClock(ctx, this.size, colors, this.opacity, this.bobPhase); break;
+          case 'compass': drawCompass(ctx, this.size, colors, this.opacity); break;
+          case 'gear': drawGear(ctx, this.size, colors, this.opacity, this.rotation); break;
+          case 'text': drawTextSymbol(ctx, this.size, colors, this.opacity); break;
+        }
+        ctx.restore();
+      }
+    }
+
+    function init() {
+      canvas.width = width;
+      canvas.height = height;
+      shapes = [];
+      for (let i = 0; i < SHAPE_COUNT; i++) {
+        shapes.push(new FloatingShape());
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      shapes.forEach(s => { s.update(); s.draw(); });
+      animationId = requestAnimationFrame(animate);
+    }
+
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+      }, 200);
+    });
+
+    document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) cancelAnimationFrame(animationId);
+      else animate();
+    });
+
+    document.addEventListener('astro:after-swap', () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      cancelAnimationFrame(animationId);
+      animate();
+    });
+
+    init();
+    animate();
+  })();
+</script>

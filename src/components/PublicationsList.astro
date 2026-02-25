@@ -1,0 +1,78 @@
+---
+import publicationsData from '../data/publications.json';
+import PublicationCard from './PublicationCard.astro';
+
+const hasSelected = publicationsData.some(p => p.selected);
+---
+<h2 id="publications">Publications</h2>
+
+{hasSelected && (
+  <div class="pub-filter-bar">
+    <button class="pub-filter-btn active" data-filter="selected">Selected</button>
+    <button class="pub-filter-btn" data-filter="all">All</button>
+  </div>
+)}
+
+<div class="publications-list">
+  {publicationsData.map(pub => (
+    <PublicationCard pub={pub} />
+  ))}
+</div>
+
+<style>
+  .pub-filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .pub-filter-btn {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 6px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+  }
+
+  .pub-filter-btn:hover {
+    background: var(--bg-hover);
+  }
+
+  .pub-filter-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+  }
+</style>
+
+<script>
+  const filterBtns = document.querySelectorAll('.pub-filter-btn');
+  const pubCards = document.querySelectorAll('.enhanced-pub-card');
+
+  function filterPubs(mode: string) {
+    pubCards.forEach(card => {
+      const el = card as HTMLElement;
+      if (mode === 'all') {
+        el.style.display = '';
+      } else {
+        el.style.display = el.dataset.selected === 'true' ? '' : 'none';
+      }
+    });
+    filterBtns.forEach(b => b.classList.remove('active'));
+  }
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = (btn as HTMLElement).dataset.filter || 'all';
+      filterPubs(mode);
+      btn.classList.add('active');
+    });
+  });
+
+  // Default: show selected
+  filterPubs('selected');
+</script>

@@ -1,0 +1,35 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer>
+  <p>
+    <small>
+      &copy; {currentYear} Ilias Stogiannidis. 
+      Powered by <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>.
+      <a href="/rss.xml" class="rss-link" aria-label="RSS Feed"><i class="fas fa-rss"></i> RSS</a>
+    </small>
+  </p>
+</footer>
+
+<style>
+  footer {
+    text-align: center;
+    padding: 30px 0;
+    margin-top: 40px;
+    border-top: 1px solid var(--border-color, #eaeaea);
+  }
+  
+  p, small {
+    color: var(--text-secondary, #777);
+  }
+  
+  a {
+    color: var(--primary-color, #3498db);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+</style>
