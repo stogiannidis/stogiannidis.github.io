@@ -81,7 +81,7 @@ body {
 	font-weight: 700;
 	margin-top: 2rem;
 	margin-bottom: 1rem;
-	font-size: 1.8rem;
+	font-size: clamp(1.4rem, 3.5vw, 1.8rem);
 	border-bottom: 2px solid var(--border-color);
 	padding-bottom: 0.3rem;
 	display: inline-block;
@@ -91,7 +91,7 @@ body {
 	color: var(--heading-color);
 	font-weight: 600;
 	margin-top: 1.5rem;
-	font-size: 1.4rem;
+	font-size: clamp(1.15rem, 2.5vw, 1.4rem);
 }
 
 .prose-area p {
