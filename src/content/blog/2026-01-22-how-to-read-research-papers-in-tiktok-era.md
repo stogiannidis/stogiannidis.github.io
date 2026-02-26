@@ -1,8 +1,8 @@
 ---
 title: "How to Read Research Papers in the TikTok Era"
-date: 2026-01-22
+date: 2026-02-25
 tags: [Research, PhD, Productivity]
-reading_time: 5
+reading_time: 11
 ---
 
 > When your attention span is shorter than a TikTok video, how do you get through a 30-page paper?
