@@ -15,6 +15,12 @@
 	--card-hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 	--badge-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 	--badge-text: #ffffff;
+	/* Research backdrop: multimodal violet + spatial teal (spatial & temporal reasoning) */
+	--research-accent: #6d5fd8;
+	--research-accent-secondary: #189a8a;
+	/* Cursor-follow spotlight (updated from JS; fall back to center) */
+	--cursor-x: 50vw;
+	--cursor-y: 50vh;
 }
 
 [data-theme='dark'] {
@@ -33,10 +39,45 @@
 	--card-hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
 	--badge-bg: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
 	--badge-text: #ffffff;
+	--research-accent: #9b8cff;
+	--research-accent-secondary: #3ecfbe;
 }
 
 html {
 	background-color: var(--bg-color);
+	background-image: linear-gradient(
+		165deg,
+		color-mix(in srgb, var(--primary-color) 8%, transparent) 0%,
+		transparent 36%,
+		color-mix(in srgb, var(--research-accent-secondary) 7%, transparent) 68%,
+		color-mix(in srgb, var(--research-accent) 5%, transparent) 100%
+	);
+}
+
+/* Soft spotlight: temporal/vision (primary) + multimodal (research accent) */
+html::after {
+	content: '';
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: -1;
+	background:
+		radial-gradient(
+			circle 36vmin at var(--cursor-x) var(--cursor-y),
+			color-mix(in srgb, var(--research-accent) 13%, transparent),
+			transparent 62%
+		),
+		radial-gradient(
+			circle 54vmin at var(--cursor-x) var(--cursor-y),
+			color-mix(in srgb, var(--primary-color) 14%, transparent),
+			transparent 68%
+		);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html::after {
+		display: none;
+	}
 }
 
 body {
@@ -49,6 +90,18 @@ body {
 	font-size: 16px;
 	scroll-behavior: smooth;
 	transition: color 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+}
+
+/* Keyboard focus — visible rings on interactive elements */
+:where(a, button, input, textarea, select):focus-visible {
+	outline: 2px solid var(--primary-color);
+	outline-offset: 2px;
 }
 
 /* Accessibility: Skip link */
@@ -67,12 +120,13 @@ body {
 	top: 0;
 }
 
-/* Layout Wrapper */
+/* Layout Wrapper — above cursor glow layer */
 .wrapper {
 	max-width: 800px;
 	margin: 0 auto;
 	padding: 0 20px;
 	position: relative;
+	z-index: 1;
 }
 
 /* Prose Selection */
