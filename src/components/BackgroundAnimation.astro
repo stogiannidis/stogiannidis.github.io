@@ -1,10 +1,8 @@
 ---
 ---
 <!--
-  Research constellations + attention map.
+  Research constellations.
   Idle state: calm clusters for vision, language, time, space, and embodiment.
-  Interaction: the cursor behaves like a local attention probe and lights up
-  nearby nodes and edges.
 -->
 <canvas id="bg-canvas" transition:persist="bg-canvas"></canvas>
 
@@ -33,9 +31,6 @@
     window[initKey] = true;
 
     const TAU = Math.PI * 2;
-    const ATTENTION_RADIUS = 240;
-    const NODE_LINK_RADIUS = 130;
-    const CURSOR_LINK_LIMIT = 4;
 
     const CLUSTER_DEFS = [
       { id: 'vision', fx: 0.17, fy: 0.24, radius: 72, nodes: 7, drift: 16, markerSize: 13, opacity: 1 },
@@ -56,22 +51,11 @@
 
     let width = window.innerWidth;
     let height = window.innerHeight;
-    let mouseX = width / 2;
-    let mouseY = height / 2;
     let animationId = 0;
     let clusters = [];
 
     const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     let reduceMotion = reduceMotionQuery.matches;
-    let cssCursorPending = false;
-
-    function clamp(value, min, max) {
-      return Math.max(min, Math.min(max, value));
-    }
-
-    function distance(ax, ay, bx, by) {
-      return Math.hypot(ax - bx, ay - by);
-    }
 
     function rgba(rgb, alpha) {
       return 'rgba(' + rgb + ', ' + alpha + ')';
@@ -101,35 +85,8 @@
       };
     }
 
-    function syncCursorCss() {
-      if (reduceMotion) return;
-      document.documentElement.style.setProperty('--cursor-x', mouseX + 'px');
-      document.documentElement.style.setProperty('--cursor-y', mouseY + 'px');
-    }
-
-    function scheduleCursorCss() {
-      if (reduceMotion || cssCursorPending) return;
-      cssCursorPending = true;
-      requestAnimationFrame(() => {
-        cssCursorPending = false;
-        syncCursorCss();
-      });
-    }
-
-    function onPointerMove(event) {
-      mouseX = event.clientX;
-      mouseY = event.clientY;
-      scheduleCursorCss();
-    }
-
     function onReducedMotionChange(event) {
       reduceMotion = event.matches;
-      if (reduceMotion) {
-        document.documentElement.style.removeProperty('--cursor-x');
-        document.documentElement.style.removeProperty('--cursor-y');
-      } else {
-        syncCursorCss();
-      }
       createClusters();
     }
 
@@ -159,7 +116,6 @@
           driftSpeedY: 0.16 + Math.random() * 0.14,
           nodes,
           positions: [],
-          nearest: [],
           x: width * definition.fx,
           y: height * definition.fy,
           attention: 0,
@@ -173,9 +129,6 @@
       height = window.innerHeight;
       canvas.width = width;
       canvas.height = height;
-      mouseX = Math.min(mouseX, width);
-      mouseY = Math.min(mouseY, height);
-      syncCursorCss();
     }
 
     function updateClusters(time) {
@@ -187,7 +140,7 @@
         const drift = reduceMotion ? 0 : cluster.drift;
         cluster.x = width * cluster.fx + Math.sin(time * cluster.driftSpeedX + cluster.phaseX) * drift;
         cluster.y = height * cluster.fy + Math.cos(time * cluster.driftSpeedY + cluster.phaseY) * drift;
-        cluster.attention = reduceMotion ? 0 : clamp(1 - distance(mouseX, mouseY, cluster.x, cluster.y) / ATTENTION_RADIUS, 0, 1);
+        cluster.attention = 0;
 
         cluster.positions = cluster.nodes.map((node) => {
           const pulse = reduceMotion ? 0 : Math.sin(time * node.pulseSpeed + node.pulsePhase);
@@ -201,11 +154,8 @@
             y,
             size: node.size + pulse * 0.16,
             pulse,
-            cursorDist: distance(mouseX, mouseY, x, y),
           };
         });
-
-        cluster.nearest = cluster.positions.slice().sort((a, b) => a.cursorDist - b.cursorDist);
       });
     }
 
@@ -214,33 +164,6 @@
         if (clusters[i].id === id) return clusters[i];
       }
       return null;
-    }
-
-    function getFocusCluster() {
-      if (!clusters.length) return null;
-
-      let best = clusters[0];
-      for (let i = 1; i < clusters.length; i++) {
-        if (clusters[i].attention > best.attention) best = clusters[i];
-      }
-      return best;
-    }
-
-    function drawCursorWash() {
-      if (reduceMotion) return;
-
-      const focus = getFocusCluster();
-      const theme = focus && focus.theme ? focus.theme : getThemes().vision;
-      const radius = Math.max(width, height) * 0.5;
-      const gradient = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, radius);
-
-      gradient.addColorStop(0, rgba(theme.main, isDark() ? 0.09 : 0.08));
-      gradient.addColorStop(0.32, rgba(theme.accent, isDark() ? 0.06 : 0.045));
-      gradient.addColorStop(0.68, rgba(theme.outline, isDark() ? 0.03 : 0.025));
-      gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, width, height);
     }
 
     function drawClusterHalo(cluster) {
@@ -306,58 +229,10 @@
       ctx.restore();
     }
 
-    function drawAttentionMesh(cluster) {
-      if (cluster.attention < 0.04) return;
-
-      const active = cluster.nearest
-        .filter((point) => point.cursorDist < NODE_LINK_RADIUS)
-        .slice(0, CURSOR_LINK_LIMIT);
-
-      if (!active.length) return;
-
-      ctx.save();
-
-      for (let i = 0; i < active.length; i++) {
-        const point = active[i];
-        const weight = cluster.attention * clamp(1 - point.cursorDist / NODE_LINK_RADIUS, 0, 1);
-        ctx.strokeStyle = rgba(i === 0 ? cluster.theme.accent : cluster.theme.main, 0.16 + weight * 0.46);
-        ctx.lineWidth = 1 + weight * 1.5;
-        ctx.beginPath();
-        ctx.moveTo(mouseX, mouseY);
-        ctx.lineTo(point.x, point.y);
-        ctx.stroke();
-      }
-
-      for (let i = 0; i < active.length; i++) {
-        for (let j = i + 1; j < active.length; j++) {
-          const a = active[i];
-          const b = active[j];
-          const edgeDist = distance(a.x, a.y, b.x, b.y);
-          if (edgeDist > NODE_LINK_RADIUS) continue;
-
-          const strength = cluster.attention * clamp(1 - edgeDist / NODE_LINK_RADIUS, 0, 1);
-          ctx.strokeStyle = rgba(cluster.theme.accent, 0.08 + strength * 0.26);
-          ctx.lineWidth = 0.8 + strength;
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.stroke();
-        }
-      }
-
-      ctx.strokeStyle = rgba(cluster.theme.accent, 0.08 + cluster.attention * 0.24);
-      ctx.lineWidth = 0.9 + cluster.attention * 0.8;
-      ctx.beginPath();
-      ctx.arc(mouseX, mouseY, 16 + cluster.attention * 18, 0, TAU);
-      ctx.stroke();
-
-      ctx.restore();
-    }
-
     function drawNodes(cluster) {
       for (let i = 0; i < cluster.positions.length; i++) {
         const point = cluster.positions[i];
-        const proximity = reduceMotion ? 0 : clamp(1 - point.cursorDist / NODE_LINK_RADIUS, 0, 1);
+        const proximity = 0;
         const radius = point.size + proximity * 1.35;
         const fillColor = proximity > 0.45 ? cluster.theme.accent : cluster.theme.main;
         const alpha = (0.18 + (point.pulse + 1) * 0.045 + cluster.attention * 0.06 + proximity * 0.42) * cluster.opacity;
@@ -505,12 +380,10 @@
       updateClusters(time);
 
       ctx.clearRect(0, 0, width, height);
-      drawCursorWash();
 
       for (let i = 0; i < clusters.length; i++) drawClusterHalo(clusters[i]);
       for (let i = 0; i < BRIDGES.length; i++) drawBridge(BRIDGES[i]);
       for (let i = 0; i < clusters.length; i++) drawIdleMesh(clusters[i]);
-      for (let i = 0; i < clusters.length; i++) drawAttentionMesh(clusters[i]);
       for (let i = 0; i < clusters.length; i++) drawMarker(clusters[i], time);
       for (let i = 0; i < clusters.length; i++) drawNodes(clusters[i]);
     }
@@ -539,8 +412,6 @@
       }, 160);
     });
 
-    document.addEventListener('pointermove', onPointerMove, { passive: true });
-
     if (typeof reduceMotionQuery.addEventListener === 'function') {
       reduceMotionQuery.addEventListener('change', onReducedMotionChange);
     } else if (typeof reduceMotionQuery.addListener === 'function') {
@@ -559,7 +430,6 @@
 
     resizeCanvas();
     createClusters();
-    syncCursorCss();
     start();
   })();
 </script>

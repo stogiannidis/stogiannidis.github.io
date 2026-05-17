@@ -1,5 +1,20 @@
 ---
 const news = [
+  { date: 'Jul. 2026', content: 'Attending Greeks in AI in Athens (15-17 July).', highlight: true },
+  { date: 'Jun. 2026', content: 'Attending the HERON 1st Robotics School in Athens (29-30 June).', highlight: true },
+  {
+    date: 'May 2026',
+    content: 'PhenoAssistant has been accepted in Nature Communications.',
+    url: 'https://www.nature.com/articles/s41467-026-71090-y',
+    highlight: true,
+  },
+  {
+    date: 'May 2026',
+    content: 'Our paper "Anatomy-Grounded Weakly Supervised Prompt Tuning for Chest X-ray Latent Diffusion Models" has been accepted to MIDL (Medical Imaging with Deep Learning) 2026.',
+    url: 'https://arxiv.org/abs/2506.10633',
+    highlight: true,
+  },
+  { date: 'Mar. 2026', content: 'Attended the ELLIS Winter School on Foundation Models in Amsterdam.', highlight: false },
   { date: 'Dec. 2024', content: 'Visiting AUEB (20th) to give a talk about pursuing a PhD abroad.', highlight: true },
   { date: 'Aug. 2024', content: 'Started PhD at The University of Edinburgh.', highlight: false },
   { date: 'Dec. 2023', content: 'MSc thesis available on NLP Group website.', highlight: false },
@@ -14,7 +29,13 @@ const news = [
   {news.map(item => (
     <div class={`news-item reveal ${item.highlight ? 'highlight' : ''}`}>
       <div class="news-date">{item.date}</div>
-      <div class="news-content">{item.content}</div>
+      <div class="news-content">
+        {item.url ? (
+          <a href={item.url} target="_blank" rel="noopener noreferrer">{item.content}</a>
+        ) : (
+          item.content
+        )}
+      </div>
     </div>
   ))}
 </div>
@@ -59,6 +80,16 @@ const news = [
     flex: 1;
     line-height: 1.6;
     color: var(--text-color);
+  }
+
+  .news-content a {
+    color: inherit;
+    text-decoration-color: var(--primary-color);
+    text-underline-offset: 3px;
+  }
+
+  .news-content a:hover {
+    color: var(--primary-color);
   }
 
   @media (max-width: 768px) {

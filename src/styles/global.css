@@ -18,9 +18,6 @@
 	/* Research backdrop: multimodal violet + spatial teal (spatial & temporal reasoning) */
 	--research-accent: #6d5fd8;
 	--research-accent-secondary: #189a8a;
-	/* Cursor-follow spotlight (updated from JS; fall back to center) */
-	--cursor-x: 50vw;
-	--cursor-y: 50vh;
 }
 
 [data-theme='dark'] {
@@ -52,32 +49,6 @@ html {
 		color-mix(in srgb, var(--research-accent-secondary) 7%, transparent) 68%,
 		color-mix(in srgb, var(--research-accent) 5%, transparent) 100%
 	);
-}
-
-/* Soft spotlight: temporal/vision (primary) + multimodal (research accent) */
-html::after {
-	content: '';
-	position: fixed;
-	inset: 0;
-	pointer-events: none;
-	z-index: -1;
-	background:
-		radial-gradient(
-			circle 36vmin at var(--cursor-x) var(--cursor-y),
-			color-mix(in srgb, var(--research-accent) 13%, transparent),
-			transparent 62%
-		),
-		radial-gradient(
-			circle 54vmin at var(--cursor-x) var(--cursor-y),
-			color-mix(in srgb, var(--primary-color) 14%, transparent),
-			transparent 68%
-		);
-}
-
-@media (prefers-reduced-motion: reduce) {
-	html::after {
-		display: none;
-	}
 }
 
 body {
@@ -120,7 +91,7 @@ body {
 	top: 0;
 }
 
-/* Layout Wrapper — above cursor glow layer */
+/* Layout Wrapper */
 .wrapper {
 	max-width: 800px;
 	margin: 0 auto;
