@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mind the Gap: Diagnosing Spatial Reasoning Failures in MLLMs</title>
+<meta name="description" content="A psychometrically grounded diagnostic suite of seven spatial-reasoning task splits (2,855 samples) evaluating 32 multimodal LLMs. Preprint.">
+<meta name="author" content="Ilias M. Stogiannidis, Steven McDonagh, Sotirios A. Tsaftaris">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://stogiannidis.github.io/projects/mind-the-gap/">
+<meta property="og:title" content="Mind the Gap: Diagnosing Spatial Reasoning Failures in MLLMs">
+<meta property="og:description" content="32 MLLMs · 7 spatial-reasoning tasks · 2,855 samples. Models describe scenes but cannot mentally simulate rotation, folding, or perspective. Preprint.">
+<meta property="og:image" content="https://stogiannidis.github.io/projects/mind-the-gap/static/images/figures/hero.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Mind the Gap: Diagnosing Spatial Reasoning Failures in MLLMs">
+<meta name="twitter:description" content="32 MLLMs · 7 spatial-reasoning tasks · 2,855 samples. A diagnostic benchmark for spatial reasoning in MLLMs.">
+<meta name="twitter:image" content="https://stogiannidis.github.io/projects/mind-the-gap/static/images/figures/hero.png">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%A0%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,500&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --navy:#0B1F3A; --navy-2:#123E6D; --steel:#2D6A9F; --cyan:#2B8EA3; --amber:#D08A2D;
+  --coral:var(--amber); --teal:var(--cyan); --blue:var(--steel); --green:#4F8A6D; --highlight:#E5EEF8;
+  --coral-d:#AA641A; --teal-d:#176F80; --coral-h:var(--navy-2);
+  --ink:#0B1F3A; --muted:#52617a; --bg:#ffffff; --bg-alt:#F4F8FC; --border:#D9E5EF;
+  --maxw:1080px; --nav-h:58px;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --serif:'Newsreader',Georgia,'Times New Roman',serif;
+  --shadow:0 1px 2px rgba(16,32,46,.06),0 8px 24px rgba(16,32,46,.07);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased;font-size:17px}
+a{color:var(--teal-d);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3{line-height:1.2}
+img{max-width:100%;height:auto;display:block}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:-999px;top:8px;z-index:100;background:#fff;color:var(--ink);padding:10px 16px;border-radius:8px;font-weight:700;box-shadow:var(--shadow)}
+.skip:focus{left:8px}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+section{scroll-margin-top:calc(var(--nav-h) + 12px)}
+
+/* ---------- Nav ---------- */
+.nav{position:sticky;top:0;z-index:50;height:var(--nav-h);background:rgba(255,255,255,.86);
+  backdrop-filter:saturate(180%) blur(10px);border-bottom:1px solid var(--border)}
+.nav .wrap{display:flex;align-items:center;height:100%;gap:6px;justify-content:space-between}
+.nav .brand{font-weight:800;letter-spacing:-.01em;font-size:15px;color:var(--ink);white-space:nowrap}
+.nav .brand .dot{color:var(--amber)}
+.nav .links{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.nav .links a{color:var(--muted);font-weight:600;font-size:13.5px;padding:7px 10px;border-radius:8px;white-space:nowrap}
+.nav .links a:hover{color:var(--ink);background:var(--bg-alt);text-decoration:none}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;overflow:hidden;color:#fff;
+  background:
+    linear-gradient(90deg,rgba(11,31,58,.96) 0%,rgba(11,31,58,.88) 42%,rgba(11,31,58,.58) 100%),
+    url("static/images/figures/hero.png") center 58%/cover no-repeat,
+    var(--navy)}
+.hero .wrap{padding:58px 22px 46px;text-align:left}
+.venue{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:12.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:#E5EEF8;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);
+  padding:6px 14px;border-radius:999px}
+.hero h1{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,56px);margin:20px 0 6px;max-width:20ch;letter-spacing:0}
+.hero h1 .grad{color:#CFE3F4}
+.hero .sub{color:#D5E4F0;font-size:clamp(15px,2.2vw,19px);max-width:58ch;margin:12px 0 0}
+.authors{margin:28px 0 4px;font-size:18px;font-weight:600;color:#F5FAFD}
+.authors a{color:#fff;border-bottom:1px solid rgba(255,255,255,.4)}
+.authors a:hover{border-color:#fff;text-decoration:none}
+.authors sup{color:var(--teal);font-weight:700}
+.affil{color:#BFD1DE;font-size:15px;margin-top:8px}
+.affil .corr{color:#E5EEF8;overflow-wrap:anywhere}
+
+/* ---------- Buttons ---------- */
+.btns{display:flex;flex-wrap:wrap;gap:11px;justify-content:flex-start;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.24);
+  color:#fff;font-weight:600;font-size:14.5px;padding:11px 17px;border-radius:8px;transition:.16s}
+.btn:hover{background:#fff;color:#101a2b;text-decoration:none;transform:translateY(-1px);border-color:#fff}
+.btn svg{width:17px;height:17px;flex:none}
+.btn.primary{background:var(--amber);border-color:var(--amber)}
+.btn.primary:hover{background:#fff;color:var(--coral-d)}
+
+/* ---------- Stat strip ---------- */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:34px 0 0;max-width:760px}
+.stat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:16px 10px}
+.stat .n{font-size:clamp(22px,4vw,32px);font-weight:800;line-height:1;letter-spacing:-.02em}
+.stat .n.c{color:var(--coral)} .stat .n.t{color:var(--teal)} .stat .n.b{color:var(--blue)} .stat .n.g{color:var(--green)}
+.stat .l{color:#C9DAE7;font-size:12.5px;font-weight:600;margin-top:7px;text-transform:uppercase;letter-spacing:.06em}
+
+/* ---------- Generic section ---------- */
+.s{padding:62px 0}
+.s.alt{background:var(--bg-alt);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.eyebrow{text-align:center;color:var(--teal-d);font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase}
+.s h2{text-align:center;font-family:var(--serif);font-weight:600;font-size:clamp(26px,3.6vw,38px);margin:10px 0 0;letter-spacing:-.01em}
+.s .lead{text-align:center;color:var(--muted);max-width:64ch;margin:14px auto 0;font-size:17px}
+
+/* ---------- Abstract ---------- */
+.abstract{max-width:62ch;margin:26px auto 0;font-size:18px;color:#2a3a4a}
+.abstract p{margin:0 0 16px}
+
+/* ---------- Figure blocks ---------- */
+figure{margin:0}
+.fig{margin:34px auto 0;max-width:920px}
+.fig img{border:1px solid var(--border);border-radius:8px;background:#fff;box-shadow:var(--shadow);padding:8px}
+.fig figcaption{color:var(--muted);font-size:14.5px;margin-top:14px;text-align:center;max-width:80ch;margin-left:auto;margin-right:auto}
+.fig figcaption b{color:var(--ink)}
+
+/* ---------- Findings cards ---------- */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:36px}
+.card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:22px 22px 20px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--accent,var(--teal))}
+.card .k{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;letter-spacing:-.01em}
+.card .k .num{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#fff;font-size:14px;background:var(--accent,var(--teal))}
+.card p{margin:11px 0 0;color:var(--muted);font-size:15.3px}
+.card .big{font-weight:800;color:var(--ink)}
+.tagrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tag{font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--bg-alt);border:1px solid var(--border);color:var(--ink)}
+.taxo{max-width:920px;margin:42px auto 0;text-align:center}
+.taxo h3{font-size:18px;margin:0 0 16px;font-weight:700}
+.taxo-tags{justify-content:center}
+.taxo .tag{font-weight:700}
+.taxo .tag em{font-style:normal;color:var(--muted);font-weight:600;margin-left:6px}
+
+/* ---------- Task grid ---------- */
+.tasks{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:16px;margin-top:36px}
+.task{background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.task .thumb{aspect-ratio:16/10;background:var(--bg-alt);display:grid;place-items:center;overflow:hidden;border-bottom:1px solid var(--border)}
+.task .thumb img{width:100%;height:100%;object-fit:cover}
+.task .thumb.placeholder{font-size:13px;color:var(--muted);font-weight:600;text-align:center;padding:10px;background:repeating-linear-gradient(45deg,#f3f7fa,#f3f7fa 12px,#eef3f7 12px,#eef3f7 24px)}
+.task .body{padding:14px 15px 16px}
+.task .body h3{font-size:16px;margin:0;display:flex;align-items:center;gap:8px;justify-content:space-between}
+.task .body h3 .n{font-size:12px;font-weight:700;color:#1c6f68;background:rgba(78,205,196,.14);border-radius:999px;padding:2px 9px;white-space:nowrap}
+.task .body p{margin:8px 0 0;font-size:13.6px;color:var(--muted)}
+.task .body .src{margin-top:9px;font-size:12px;color:var(--muted);font-weight:600}
+.task .body .src b{color:var(--ink)}
+
+/* ---------- Leaderboard ---------- */
+.tablewrap{margin-top:30px;border:1px solid var(--border);border-radius:8px;overflow:hidden;box-shadow:var(--shadow);background:#fff}
+.tablescroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.lb{border-collapse:collapse;width:100%;font-size:13.5px;min-width:760px}
+table.lb thead th{background:var(--coral-h);color:#fff;font-weight:700;padding:11px 9px;text-align:center;position:sticky;top:0;cursor:pointer;user-select:none;white-space:nowrap;font-size:12.5px}
+table.lb thead th:focus-visible{outline:2px solid #fff;outline-offset:-3px}
+table.lb thead th:first-child{text-align:left}
+table.lb thead th .ar{opacity:.5;font-size:10px;margin-left:3px}
+table.lb thead th.sorted .ar{opacity:1}
+table.lb tbody td{padding:9px 9px;text-align:center;border-top:1px solid var(--border);white-space:nowrap}
+table.lb tbody td:first-child{text-align:left;font-weight:600}
+table.lb tbody tr:nth-child(even){background:var(--bg-alt)}
+table.lb tbody tr:hover{background:#eef9f8}
+td.ov{font-weight:800}
+.col-ov{background:rgba(78,205,196,.10)}
+.best{background:rgba(78,205,196,.30)!important;font-weight:800;border-radius:6px}
+.src-badge{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:middle}
+.src-badge.closed{background:var(--coral)} .src-badge.open{background:var(--teal)}
+.lb-legend{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;align-items:center;margin-top:16px;color:var(--muted);font-size:13.5px}
+.lb-legend span{display:inline-flex;align-items:center;gap:7px}
+.note{color:var(--muted);font-size:13px;text-align:center;margin-top:10px}
+
+/* ---------- Examples ---------- */
+.ex{display:grid;grid-template-columns:200px 1fr;gap:20px;background:#fff;border:1px solid var(--border);
+  border-left:5px solid var(--coral);border-radius:8px;padding:20px;box-shadow:var(--shadow);margin-top:20px}
+.ex.success{border-left-color:var(--teal)}
+.ex .imgwrap img{border-radius:10px;border:1px solid var(--border)}
+.ex h3{margin:0;font-size:17px}
+.ex .meta{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 0}
+.chip{font-size:12px;font-weight:700;padding:3px 9px;border-radius:7px;background:var(--bg-alt);border:1px solid var(--border)}
+.chip.pred{background:rgba(255,107,107,.12);border-color:rgba(255,107,107,.4);color:#b21e1e}
+.chip.gold{background:rgba(78,205,196,.14);border-color:rgba(78,205,196,.5);color:#1c6f68}
+.ex .q{font-weight:600;margin:12px 0 0}
+.ex blockquote{margin:10px 0 0;padding:11px 15px;background:var(--bg-alt);border-left:3px solid var(--border);
+  border-radius:0 8px 8px 0;font-style:italic;color:#34465a;font-size:14.5px}
+.ex .an{margin:12px 0 0;font-size:14.6px;color:var(--muted)}
+.ex .an b{color:var(--ink)}
+
+/* ---------- Directions ---------- */
+.dirs{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:34px}
+.dir{background:#fff;border:1px solid var(--border);border-radius:8px;padding:20px;box-shadow:var(--shadow)}
+.dir h3{margin:0;font-size:16.5px;display:flex;gap:10px;align-items:center}
+.dir h3 .ic{flex:none;font-size:20px}
+.dir p{margin:9px 0 0;color:var(--muted);font-size:14.6px}
+
+/* ---------- BibTeX ---------- */
+.bibwrap{position:relative;max-width:860px;margin:26px auto 0}
+.bib{background:#0f1a28;color:#d7e3ec;border-radius:8px;padding:22px 20px;overflow-x:auto;font-size:13px;
+  font-family:'SF Mono',ui-monospace,Menlo,Consolas,monospace;line-height:1.6;box-shadow:var(--shadow)}
+.bib .k{color:#86e0d7} .bib .f{color:#9fb6c9} .bib .v{color:#ffd9a0}
+.copy{position:absolute;top:13px;right:13px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);
+  color:#d7e3ec;font-weight:600;font-size:12.5px;padding:7px 12px;border-radius:9px;cursor:pointer;transition:.15s}
+.copy:hover{background:#fff;color:#0f1a28}
+.copy:focus-visible{outline:2px solid #fff;outline-offset:2px}
+
+/* ---------- Footer ---------- */
+footer{background:#0f1a28;color:#9fb6c9;padding:34px 0;text-align:center;font-size:14px}
+footer a{color:#cdeeeb}
+footer .ft-links{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+footer .ft-links a{font-weight:600}
+
+@media (max-width:720px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .ex{grid-template-columns:1fr}
+  .ex .imgwrap{max-width:260px;margin:0 auto}
+  .nav .brand{display:none}
+  .nav .links{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;justify-content:flex-start;flex-wrap:nowrap}
+  .nav .links a{padding:7px 9px;font-size:13px}
+  .hero .wrap{padding:40px 18px 34px}
+  body{font-size:16px}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#abstract">Skip to content</a>
+
+<!-- ================= NAV ================= -->
+<nav class="nav">
+  <div class="wrap">
+    <span class="brand">Mind the Gap<span class="dot">.</span></span>
+    <div class="links">
+      <a href="#abstract">Abstract</a>
+      <a href="#tasks">Benchmark</a>
+      <a href="#results">Results</a>
+      <a href="#findings">Findings</a>
+      <a href="#examples">Failure Cases</a>
+      <a href="#bibtex">BibTeX</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="wrap">
+    <span class="venue">● Preprint</span>
+    <h1>Mind the Gap: <span class="grad">Diagnosing Spatial Reasoning Failures</span> in Multimodal Large Language Models</h1>
+    <p class="sub">A psychometrically grounded diagnostic suite that separates <b>reading a scene</b> from <b>mentally simulating</b> it — and reveals where today's MLLMs break.</p>
+
+    <div class="authors">
+      Ilias M. Stogiannidis<sup>1</sup>,
+      Steven McDonagh<sup>1</sup>,
+      Sotirios A. Tsaftaris<sup>1</sup>
+    </div>
+    <div class="affil">
+      <sup>1</sup>The University of Edinburgh, Edinburgh, UK<br>
+      <span class="corr">{i.stogiannidis, s.mcdonagh, s.tsaftaris}@ed.ac.uk</span>
+    </div>
+
+    <div class="btns">
+      <a class="btn primary" href="static/mind-the-gap-paper.pdf" target="_blank" rel="noopener">
+        <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        Paper (PDF)</a>
+      <a class="btn" href="https://arxiv.org/abs/2503.19707" target="_blank" rel="noopener">
+        <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        arXiv</a>
+      <a class="btn" href="https://github.com/stogiannidis/srbench" target="_blank" rel="noopener">
+        <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.5v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17 4.6 18 4.9 18 4.9c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5A11.5 11.5 0 0 0 23.5 12C23.5 5.7 18.3.5 12 .5z"/></svg>
+        Code</a>
+      <a class="btn" href="https://huggingface.co/datasets/stogian/srbench" target="_blank" rel="noopener">
+        <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="10" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="10"/><path d="M8.5 14.5a4.5 4.5 0 0 0 7 0"/></svg>
+        Dataset</a>
+      <a class="btn" href="#bibtex">
+        <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+        BibTeX</a>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="n c">32</div><div class="l">MLLMs evaluated</div></div>
+      <div class="stat"><div class="n t">7</div><div class="l">Task splits</div></div>
+      <div class="stat"><div class="n b">2,855</div><div class="l">Diagnostic items</div></div>
+      <div class="stat"><div class="n g">10</div><div class="l">Model families</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= TL;DR FIGURE ================= -->
+<section class="s">
+  <div class="wrap">
+    <p class="eyebrow">The headline</p>
+    <h2>Strong at seeing, near-chance at simulating</h2>
+    <p class="lead">Across seven tasks, the same 32 models that describe scenes well collapse toward chance once a task demands mental transformation, with 3D mental rotation bottoming out at chance. The gap is not gradual; it is a cliff.</p>
+    <figure class="fig">
+      <img src="static/images/figures/hero.png" alt="Performance of 32 MLLMs across seven spatial reasoning tasks. Each dot is one model, coloured by source type. Tasks ordered by mean difficulty.">
+      <figcaption>Performance of 32 MLLMs across seven spatial reasoning tasks. Each marker is one model, grouped by source type. Tasks are ordered by mean difficulty, easiest (left) to hardest (right). <b>Navigation</b> exhibits the widest spread (77.5&nbsp;pp), serving as a visual-grounding probe, while <b>MRT&nbsp;Hard</b> clusters all 32 models near chance (~25%).</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ================= ABSTRACT ================= -->
+<section id="abstract" class="s alt">
+  <div class="wrap">
+    <p class="eyebrow">Abstract</p>
+    <h2>Mind the Gap</h2>
+    <div class="abstract">
+      <p>Multimodal Large Language Models (MLLMs) perform well on many vision–language tasks, but this can hide fundamental spatial reasoning weaknesses. Existing benchmarks blur the line between static scene description and the dynamic mental simulation needed for rotation, folding, and perspective-taking. To target core spatial skills, we introduce a <b>psychometrically grounded diagnostic suite of seven task splits</b> adapted from cognitive assessments, spanning <b>2,855 controlled samples</b> over synthetic and real images.</p>
+      <p>Evaluating <b>32 state-of-the-art MLLMs</b> reveals a sharp dissociation: models succeed on information extraction yet fall to <b>near-chance on mental simulation</b>. Longer reasoning chains reduce accuracy, models consistently confuse mirror reflections with rotations, and left–right perspective inversions remain unsolved across all 32 models. Crucially, scaling model parameters does not improve mental simulation: 3D mental rotation stays near chance for all architectures and sizes. Our analysis offers interpretable failure diagnostics and concrete directions for architectural and training improvements.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BENCHMARK / TASKS ================= -->
+<section id="tasks" class="s">
+  <div class="wrap">
+    <p class="eyebrow">The benchmark</p>
+    <h2>Seven task splits, from cognitive science</h2>
+    <p class="lead">Each split is adapted from a gold-standard psychometric assessment, probing object-centric, egocentric, and allocentric reference frames across synthetic and real images.</p>
+    <div class="tasks">
+      <div class="task">
+        <div class="thumb"><img src="static/images/examples/mrt_hard_example.png" alt="Mental Rotation Test (Hard) example"></div>
+        <div class="body"><h3>MRT&nbsp;— Hard <span class="n">500</span></h3>
+          <p>White polycubes on a blank background, four choices. Identify the rotated original among mirrored distractors.</p>
+          <div class="src">Adapts <b>Mental Rotation Test</b> (Shepard &amp; Metzler)</div></div>
+      </div>
+      <div class="task">
+        <div class="thumb placeholder">Coloured polycubes on a 3D Cartesian grid</div>
+        <div class="body"><h3>MRT&nbsp;— Easy <span class="n">500</span></h3>
+          <p>Coloured shapes on a 3D Cartesian grid with three choices (one of the two mirror distractors removed).</p>
+          <div class="src">Adapts <b>Mental Rotation Test</b></div></div>
+      </div>
+      <div class="task">
+        <div class="thumb"><img src="static/images/examples/folding_example.png" alt="Paper folding example"></div>
+        <div class="body"><h3>Paper Folding <span class="n">400</span></h3>
+          <p>A sheet folded once or twice and hole-punched; pick the unfolded hole pattern from three options.</p>
+          <div class="src">Adapts <b>Paper Folding Test</b> (Ekstrom et al.)</div></div>
+      </div>
+      <div class="task">
+        <div class="thumb placeholder">Maze of coloured blocks · route from S → E</div>
+        <div class="body"><h3>Navigation <span class="n">400</span></h3>
+          <p>Trace paths through visual mazes, count direction changes, and relate key locations.</p>
+          <div class="src">Maze-Nav from <b>SpatialEval</b></div></div>
+      </div>
+      <div class="task">
+        <div class="thumb placeholder">Egocentric 8-class orientation (Left, Front-Left, …)</div>
+        <div class="body"><h3>Orientation <span class="n">400</span></h3>
+          <p>Binary questions on object orientation in a camera-centric, eight-class egocentric taxonomy.</p>
+          <div class="src">From <b>EgoOrientBench</b></div></div>
+      </div>
+      <div class="task">
+        <div class="thumb"><img src="static/images/examples/relations_hand_dog.jpg" alt="Spatial relations example"></div>
+        <div class="body"><h3>Spatial Relations <span class="n">370</span></h3>
+          <p>36 relations in natural images — from <i>right of</i>/<i>above</i> to <i>attached to</i>, <i>touch</i>, <i>overlapping</i>.</p>
+          <div class="src">Subset of <b>Spatial-Obj</b></div></div>
+      </div>
+      <div class="task">
+        <div class="thumb"><img src="static/images/examples/perspective_boy_man.jpg" alt="Perspective taking example"></div>
+        <div class="body"><h3>Perspective Taking <span class="n">285</span></h3>
+          <p>Adopt another agent's viewpoint — the allocentric reference-frame transformation humans find easy.</p>
+          <div class="src">From <b>What's&nbsp;UP</b></div></div>
+      </div>
+      <div class="task" style="background:linear-gradient(160deg,#16263a,#123038);color:#eef5f8;border:none">
+        <div class="body" style="display:flex;flex-direction:column;justify-content:center;height:100%">
+          <h3 style="color:#fff">2,855 items</h3>
+          <p style="color:#bcd0dd">Controlled, balanced, multiple-choice — designed to isolate <i>mental simulation</i> from <i>scene perception</i>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RESULTS / LEADERBOARD ================= -->
+<section id="results" class="s alt">
+  <div class="wrap">
+    <p class="eyebrow">Results</p>
+    <h2>Leaderboard across all seven splits</h2>
+    <p class="lead">Overall accuracy and per-split breakdown for all 32 models. Click any column header to sort. Best value per column is highlighted.</p>
+    <div class="tablewrap">
+      <div class="tablescroll">
+        <table class="lb" id="lb">
+          <thead>
+            <tr>
+              <th data-k="name" tabindex="0" role="columnheader" aria-sort="none">Model</th>
+              <th data-k="ov" class="col-ov" tabindex="0" role="columnheader" aria-sort="descending">Overall <span class="ar">▾</span></th>
+              <th data-k="fold" tabindex="0" role="columnheader" aria-sort="none">Fold.</th>
+              <th data-k="mrte" tabindex="0" role="columnheader" aria-sort="none">MRT-E</th>
+              <th data-k="mrth" tabindex="0" role="columnheader" aria-sort="none">MRT-H</th>
+              <th data-k="nav" tabindex="0" role="columnheader" aria-sort="none">Nav.</th>
+              <th data-k="ori" tabindex="0" role="columnheader" aria-sort="none">Ori.</th>
+              <th data-k="pers" tabindex="0" role="columnheader" aria-sort="none">Pers.</th>
+              <th data-k="rel" tabindex="0" role="columnheader" aria-sort="none">Rel.</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="lb-legend">
+      <span><span class="src-badge closed"></span> Closed-source / API</span>
+      <span><span class="src-badge open"></span> Open-source</span>
+      <span><span class="best" style="padding:2px 8px">best</span> column leader</span>
+    </div>
+    <p class="note">MRT-H chance level ≈ 25% (4 options). Every one of the 32 models lands between 20.0% and 29.4% on MRT-H — a capability ceiling, not a difficulty gradient.</p>
+  </div>
+</section>
+
+<!-- ================= KEY FINDINGS ================= -->
+<section id="findings" class="s">
+  <div class="wrap">
+    <p class="eyebrow">What we found</p>
+    <h2>Seven diagnostics of spatial failure</h2>
+    <p class="lead">We go beyond aggregate accuracy: distractor selection, cross-model agreement, reasoning-length, and controlled thinking-vs-instruct comparisons expose <i>how</i> models fail.</p>
+    <div class="cards">
+      <div class="card" style="--accent:var(--coral)">
+        <div class="k"><span class="num">1</span> Perception–Simulation Dissociation</div>
+        <p>Perceptual tasks are moderate — Relations <span class="big">μ=70.0%</span>, Orientation <span class="big">μ=68.6%</span> — but accuracy collapses on simulation: MRT&nbsp;Hard sits at <span class="big">μ=25.0%</span>, exactly chance. The gap is a cliff, not a slope.</p>
+      </div>
+      <div class="card" style="--accent:var(--blue)">
+        <div class="k"><span class="num">2</span> Navigation probes visual grounding</div>
+        <p>A single property — whether the model grounds route planning in the maze image — drives the split. Best <span class="big">95.8%</span>, worst <span class="big">18.2%</span>: a <span class="big">77.5&nbsp;pp</span> spread and the strongest correlation with overall rank (<span class="big">r=0.91</span>).</p>
+      </div>
+      <div class="card" style="--accent:var(--coral)">
+        <div class="k"><span class="num">3</span> The Reasoning-Length Paradox</div>
+        <p>Wrong answers carry far <i>longer</i> chains of thought — <span class="big">849</span> vs <span class="big">188</span> words on average, ~3× on Navigation and Folding. When uncertain, models <i>thrash</i> rather than converge.</p>
+      </div>
+      <div class="card" style="--accent:var(--green)">
+        <div class="k"><span class="num">4</span> Chirality confusion in rotation</div>
+        <p>Mirror-reflected distractors capture <span class="big">50–63%</span> of MRT-Easy errors and <span class="big">66–72%</span> of MRT-Hard errors. Models perceive 3D structure but project it into a reflection-symmetric representation.</p>
+      </div>
+      <div class="card" style="--accent:var(--coral)">
+        <div class="k"><span class="num">5</span> Systematic left–right inversion</div>
+        <p>Asked for another viewpoint, models answer "right" when the truth is "left" <span class="big">48.1%</span> of the time (and vice-versa <span class="big">47.6%</span>). They default to the camera frame and never flip the lateral axis.</p>
+      </div>
+      <div class="card" style="--accent:var(--blue)">
+        <div class="k"><span class="num">6</span> Scaling does not help</div>
+        <p>Mental rotation is essentially flat with size (MRT-Easy <span class="big">r=0.12</span>, MRT-Hard <span class="big">r=0.38</span>): a 7B model matches a 241B model. Closed-source's edge (51.2% vs 43.1%) is almost entirely Navigation — on mental rotation there is no significant difference.</p>
+      </div>
+      <div class="card" style="--accent:var(--green)">
+        <div class="k"><span class="num">7</span> Folding is a shallow heuristic</div>
+        <p>Paper-folding accuracy is flat across fold count × hole count (<span class="big">42.3–44.9%</span>) and fold direction. Models apply one shallow rule regardless of complexity instead of simulating each fold in sequence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ANALYSIS FIGURES ================= -->
+<section class="s alt">
+  <div class="wrap">
+    <p class="eyebrow">Diagnostics in depth</p>
+    <h2>The evidence behind the gap</h2>
+
+    <figure class="fig">
+      <img src="static/images/figures/reasoning_paradox.png" alt="Reasoning length paradox: incorrect answers use longer chains of thought across all splits.">
+      <figcaption><b>The reasoning-length paradox.</b> Across all seven splits, incorrect answers come with substantially longer chains of thought than correct ones — ~3× longer on Folding and Navigation. Models thrash through conflicting hypotheses when uncertain instead of reasoning toward the answer.</figcaption>
+    </figure>
+
+    <figure class="fig">
+      <img src="static/images/figures/thinking_vs_instruct.png" alt="Per-split accuracy delta between Thinking and Instruct variants of Qwen3-VL.">
+      <figcaption><b>Extended reasoning training is not a reliable fix.</b> Per-split accuracy delta (Thinking − Instruct) for the Qwen3-VL family. Gains appear at 30B, vanish at 8B and 235B, and <i>reverse</i> at 32B — neither consistent nor monotonic with scale.</figcaption>
+    </figure>
+
+    <figure class="fig">
+      <img src="static/images/figures/error_deep_dive.png" alt="Granular error analysis for the three hardest splits: MRT distractors, folding complexity, and perspective confusion matrix.">
+      <figcaption><b>Granular failure analysis.</b> (a–b) MRT distractor rates: mirror distractors dominate, indicating chirality confusion. (c–d) Folding accuracy is flat across fold × hole count — a shallow heuristic, not sequential simulation. (e) Perspective confusion matrix: left–right confusions account for nearly half of all errors.</figcaption>
+    </figure>
+
+    <figure class="fig">
+      <img src="static/images/figures/scaling_laws.png" alt="Scaling behaviour of 27 open-source models per split.">
+      <figcaption><b>Performance does not scale with size.</b> Per-split accuracy vs. log active parameters for 27 open-source models (dense = circles, MoE = triangles). Relations scales moderately (r=0.53); MRT-Hard is essentially flat (r=0.38). 3D mental rotation does not improve with scale.</figcaption>
+    </figure>
+
+    <figure class="fig">
+      <img src="static/images/figures/systematic_errors.png" alt="Systematic wrong-answer agreement across splits.">
+      <figcaption><b>Failures are shared, not random.</b> When models err, they converge on the <i>same</i> wrong answer far above chance: Perspective 66.6% (vs 33% baseline), Folding 65.5% (vs 50%), Orientation 98.1%. Spatial errors are systematic, stemming from how current architectures represent space.</figcaption>
+    </figure>
+
+    <div class="taxo">
+      <h3>Seven recurring error types</h3>
+      <div class="tagrow taxo-tags">
+        <span class="tag">Perspective-transformation failure <em>~36–50% of perspective errors</em></span>
+        <span class="tag">3D mental-rotation breakdown <em>~95% of MRT errors (weak models)</em></span>
+        <span class="tag">Reference-frame confusion <em>~40% of relation errors</em></span>
+        <span class="tag">Visual-grounding failure <em>weakest navigation models</em></span>
+        <span class="tag">Incomplete reasoning <em>~10–15% across splits</em></span>
+        <span class="tag">Structure misidentification <em>~5–10%, mainly MRT</em></span>
+        <span class="tag">Ambiguity handling <em>~15–20% of orientation errors</em></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAILURE EXAMPLES ================= -->
+<section id="examples" class="s">
+  <div class="wrap">
+    <p class="eyebrow">Qualitative evidence</p>
+    <h2>Inside the failures</h2>
+    <p class="lead">The same error modes recur across models: correct perception, correct reasoning <i>about</i> the rule, yet the wrong reference frame or the wrong rotation.</p>
+
+    <div class="ex">
+      <div class="imgwrap"><img src="static/images/examples/perspective_boy_man.jpg" alt="A man and a boy walking, viewed from the front"></div>
+      <div>
+        <h3>Perspective left/right reversal <span style="font-weight:500;color:var(--muted);font-size:14px">— GPT-5.2</span></h3>
+        <div class="meta"><span class="chip">Task: Perspective</span><span class="chip pred">Pred: B (right)</span><span class="chip gold">Gold: D (left)</span></div>
+        <p class="q">Q: Where is the boy from the man's perspective?</p>
+        <blockquote>"The man is on the left side of the image, and the boy is walking beside him on the man's right-hand side (viewer's right)."</blockquote>
+        <p class="an"><b>Analysis.</b> The model correctly perceives the boy on the <i>viewer's</i> right. But the man walks toward the camera, so his left and right are mirrored relative to the viewer — the boy is on the man's <b>left</b>. The canonical mirror-inversion error: viewer-frame coordinates mapped onto the subject's frame without the required 180° reference-frame rotation.</p>
+      </div>
+    </div>
+
+    <div class="ex">
+      <div class="imgwrap"><img src="static/images/examples/mrt_hard_example.png" alt="Mental Rotation Test hard item with polycube shapes"></div>
+      <div>
+        <h3>Exhaustive analysis, wrong rotation <span style="font-weight:500;color:var(--muted);font-size:14px">— GPT-5.2</span></h3>
+        <div class="meta"><span class="chip">Task: MRT Hard</span><span class="chip pred">Pred: B</span><span class="chip gold">Gold: C</span><span class="chip">1,851 characters of reasoning</span></div>
+        <p class="q">Q: Which option is the original shape in a rotated orientation?</p>
+        <blockquote>"Key fingerprint features preserved under rotation: exactly one cube has 3 neighbours; the branching point is one in from an end … Option B preserves the same connectivity. Therefore, only Option B is a rotated version."</blockquote>
+        <p class="an"><b>Analysis.</b> The model identifies the right rotation-invariant properties and checks each option — exactly the correct procedure — yet answers wrong. A <b>reasoning–perception decoupling</b>: it articulates <i>what</i> should be invariant under rotation but cannot reliably <i>perceive</i> whether those invariants hold in the 3D rendering.</p>
+      </div>
+    </div>
+
+    <div class="ex">
+      <div class="imgwrap"><img src="static/images/examples/relations_hand_dog.jpg" alt="A man patting a dog while holding a phone"></div>
+      <div>
+        <h3>Hand-laterality inversion <span style="font-weight:500;color:var(--muted);font-size:14px">— GPT-5.2</span></h3>
+        <div class="meta"><span class="chip">Task: Relations</span><span class="chip pred">Pred: B (right)</span><span class="chip gold">Gold: A (left)</span></div>
+        <p class="q">Q: Which hand is the man using to pat the dog?</p>
+        <blockquote>"The hand patting the dog is the one not holding the phone, which is his right hand."</blockquote>
+        <p class="an"><b>Analysis.</b> The exclusion logic is valid, but the laterality label is wrong. Because the man faces the camera, his left hand appears on the viewer's right. The model conflates <i>image-space position</i> with <i>body-space identity</i> — the mirror-inversion error, at the level of body parts.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BIBTEX ================= -->
+<section id="bibtex" class="s alt">
+  <div class="wrap">
+    <p class="eyebrow">Cite</p>
+    <h2>BibTeX</h2>
+    <div class="bibwrap">
+      <button class="copy" id="copyBtn" aria-live="polite">Copy</button>
+      <pre class="bib" id="bibtexCode"><span class="k">@misc</span>{stogiannidis2026mindgap,
+  <span class="f">title</span>     = <span class="v">{Mind the Gap: Diagnosing Spatial Reasoning Failures in Multimodal Large Language Models}</span>,
+  <span class="f">author</span>    = <span class="v">{Stogiannidis, Ilias M. and McDonagh, Steven and Tsaftaris, Sotirios A.}</span>,
+  <span class="f">note</span>      = <span class="v">{Preprint}</span>,
+  <span class="f">year</span>      = <span class="v">{2026}</span>
+}</pre>
+    </div>
+    <p class="note">An earlier version appeared as <a href="https://arxiv.org/abs/2503.19707" target="_blank" rel="noopener">arXiv:2503.19707</a> — "Mind the Gap: Benchmarking Spatial Reasoning in Vision-Language Models".</p>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="ft-links">
+      <a href="static/mind-the-gap-paper.pdf" target="_blank" rel="noopener">Paper</a>
+      <a href="https://arxiv.org/abs/2503.19707" target="_blank" rel="noopener">arXiv</a>
+      <a href="https://github.com/stogiannidis/srbench" target="_blank" rel="noopener">Code</a>
+      <a href="https://huggingface.co/datasets/stogian/srbench" target="_blank" rel="noopener">Dataset</a>
+    </div>
+    <div>Ilias M. Stogiannidis · Steven McDonagh · Sotirios A. Tsaftaris — The University of Edinburgh</div>
+    <div style="margin-top:8px;opacity:.7;font-size:13px">Preprint · Page template hand-built for this project.</div>
+  </div>
+</footer>
+
+<script>
+// ---------- Leaderboard data (from main paper, Table 1) ----------
+const DATA = [
+  // name, src, overall, fold, mrte, mrth, nav, ori, pers, rel
+  ["Gemini-3 Flash Preview","closed",63.15,70.00,39.40,28.20,95.75,82.50,54.04,85.95],
+  ["GPT-5.2","closed",51.63,32.50,25.40,21.40,92.75,80.25,38.95,82.97],
+  ["Claude-Sonnet-4.5","closed",51.52,57.25,32.00,26.00,71.50,70.75,37.19,74.86],
+  ["Grok-4.1-fast","closed",44.73,38.00,32.80,22.00,47.00,71.75,44.91,67.03],
+  ["Qwen3-VL-235B (Thinking)","open",56.50,63.00,33.00,25.00,83.00,76.50,37.19,88.38],
+  ["Qwen3-VL-235B","open",55.80,49.25,38.00,25.00,81.00,79.25,41.05,87.30],
+  ["Qwen3-VL-32B","open",53.91,46.00,32.80,29.40,80.50,80.00,32.63,83.51],
+  ["Qwen3-VL-30B (Thinking)","open",51.21,46.25,34.00,27.00,63.25,75.75,37.19,83.78],
+  ["InternVL3.5-241B","open",49.35,42.50,35.00,28.20,47.25,79.00,38.25,83.51],
+  ["Qwen3-VL-32B (Thinking)","open",48.72,37.75,32.40,23.20,62.25,77.75,33.68,82.70],
+  ["InternVL3.5-38B","open",47.95,45.75,33.60,25.60,51.75,73.00,36.49,77.57],
+  ["Qwen3-VL-8B (Thinking)","open",45.92,33.75,37.40,23.40,48.75,74.25,31.93,78.11],
+  ["Qwen3-VL-8B","open",45.36,37.75,29.40,26.60,43.50,78.25,28.42,80.00],
+  ["GLM-4.6v","open",44.94,33.50,30.20,22.60,62.00,68.00,32.63,73.51],
+  ["InternVL3.5-30B","open",44.83,42.75,32.20,24.60,40.50,69.75,35.79,76.22],
+  ["InternVL3.5-14B","open",44.31,42.00,34.40,24.80,38.50,71.25,30.53,74.32],
+  ["InternVL3.5-8B","open",43.89,38.00,32.60,24.40,43.50,68.50,32.98,74.05],
+  ["MiniCPM-V-4.5","open",43.78,43.25,32.80,26.00,37.00,68.25,32.28,72.97],
+  ["Llama-3.2-90B Vision","open",43.71,35.25,33.40,27.00,31.50,74.00,40.70,72.16],
+  ["Llama-4-Scout-109B-A17B","open",43.43,45.00,31.00,23.80,29.00,75.00,35.79,72.43],
+  ["Qwen3-VL-30B","open",41.61,23.00,22.00,20.00,46.75,76.50,32.98,80.81],
+  ["Llama-4-Maverick-402B-A17B","open",41.33,42.00,30.60,26.00,42.75,57.75,30.18,65.14],
+  ["Gemma-3-27B","open",39.93,40.50,32.80,27.20,26.25,60.25,34.39,63.24],
+  ["Idefics3-8B","open",38.49,34.25,33.20,25.00,24.00,64.25,34.74,59.19],
+  ["LLaVA-OneVision-7B","open",38.39,32.75,29.40,25.40,29.50,61.75,35.79,60.54],
+  ["Llama-3.2-11B Vision","open",38.14,35.75,35.00,23.00,24.50,55.25,36.84,62.70],
+  ["Gemma-3-12B","open",37.55,35.25,32.40,24.20,22.25,60.00,35.79,58.65],
+  ["SmolVLM2-2.2B","open",35.97,31.00,33.60,23.60,21.75,63.00,36.49,47.03],
+  ["Gemma-3-4B","open",34.89,26.00,29.80,26.00,24.50,55.75,38.95,48.92],
+  ["LLaVA-1.5-7B","open",34.29,35.00,32.00,25.20,40.50,44.75,23.86,38.92],
+  ["SmolVLM2-500M Video","open",32.78,31.00,33.60,24.60,23.25,53.50,31.93,33.24],
+  ["LLaVA-v1.6-Mistral-7B","open",32.15,32.25,25.20,24.20,18.25,50.25,30.18,49.19]
+];
+const COLS = ["name","src","ov","fold","mrte","mrth","nav","ori","pers","rel"];
+const NUMCOLS = ["ov","fold","mrte","mrth","nav","ori","pers","rel"];
+const idx = k => COLS.indexOf(k);
+
+// column maxima for "best" highlight
+const maxes = {};
+NUMCOLS.forEach(k=>{ maxes[k] = Math.max(...DATA.map(r=>r[idx(k)])); });
+
+const tbody = document.querySelector("#lb tbody");
+let sortKey="ov", sortDir=-1;
+
+function render(){
+  const rows = [...DATA].sort((a,b)=>{
+    const ka=a[idx(sortKey)], kb=b[idx(sortKey)];
+    if(sortKey==="name") return sortDir*String(ka).localeCompare(String(kb));
+    return sortDir*(ka-kb);
+  });
+  tbody.innerHTML = rows.map(r=>{
+    const cells = NUMCOLS.map(k=>{
+      const v=r[idx(k)];
+      const cls=[];
+      if(k==="ov") cls.push("ov","col-ov");
+      if(v===maxes[k]) cls.push("best");
+      return `<td class="${cls.join(' ')}">${v.toFixed(2)}%</td>`;
+    }).join("");
+    const srcLabel = r[1]==="closed" ? "Closed-source" : "Open-source";
+    const badge = `<span class="src-badge ${r[1]}" aria-hidden="true"></span><span class="sr-only">${srcLabel}: </span>`;
+    return `<tr><td>${badge}${r[0]}</td>${cells}</tr>`;
+  }).join("");
+  document.querySelectorAll("#lb thead th").forEach(th=>{
+    const active = th.dataset.k===sortKey;
+    th.classList.toggle("sorted", active);
+    th.setAttribute("aria-sort", active ? (sortDir<0?"descending":"ascending") : "none");
+    const ar=th.querySelector(".ar");
+    if(ar) ar.textContent = active ? (sortDir<0?"▾":"▴") : "▾";
+  });
+}
+document.querySelectorAll("#lb thead th").forEach(th=>{
+  if(!th.querySelector(".ar")){ const s=document.createElement("span"); s.className="ar"; s.textContent="▾"; th.appendChild(s); }
+  const doSort=()=>{
+    const k=th.dataset.k;
+    if(k===sortKey){ sortDir*=-1; } else { sortKey=k; sortDir = (k==="name") ? 1 : -1; }
+    render();
+  };
+  th.addEventListener("click",doSort);
+  th.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); doSort(); } });
+});
+render();
+
+// ---------- Copy BibTeX ----------
+const btn=document.getElementById("copyBtn");
+btn.addEventListener("click",()=>{
+  const txt=document.getElementById("bibtexCode").innerText;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const o=btn.textContent; btn.textContent="Copied ✓";
+    setTimeout(()=>btn.textContent=o,1600);
+  }).catch(()=>{ btn.textContent="Press ⌘/Ctrl+C"; });
+});
+</script>
+</body>
+</html>

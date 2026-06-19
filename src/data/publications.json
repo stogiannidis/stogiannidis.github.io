@@ -1,5 +1,17 @@
 [
 	{
+		"title": "Mind the Gap: Diagnosing Spatial Reasoning Failures in Multimodal Large Language Models",
+		"authors": "<strong>Ilias Stogiannidis</strong>, Steven McDonagh, Sotirios A. Tsaftaris",
+		"conference_short": "Preprint",
+		"conference": "Preprint, 2026.",
+		"pdf": "/projects/mind-the-gap/static/mind-the-gap-paper.pdf",
+		"code": "https://github.com/stogiannidis/srbench",
+		"page": "/projects/mind-the-gap/",
+		"bibtex": "@misc{stogiannidis2026mindgap,\n  title={Mind the Gap: Diagnosing Spatial Reasoning Failures in Multimodal Large Language Models},\n  author={Stogiannidis, Ilias M. and McDonagh, Steven and Tsaftaris, Sotirios A.},\n  note={Preprint},\n  year={2026}\n}",
+		"image": "/img/publications/mind-the-gap-hero.png",
+		"selected": true
+	},
+	{
 		"title": "Cache me if you Can: an Online Cost-aware Teacher-Student framework to Reduce the Calls to Large Language Models",
 		"authors": "Ilias Stogiannidis, Stavros Vassos, Prodromos Malakasiotis, Ion Androutsopoulos",
 		"conference_short": "EMNLP2023",
