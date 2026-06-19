@@ -6,7 +6,7 @@
 		"conference": "Preprint, 2026.",
 		"pdf": "/projects/mind-the-gap/static/mind-the-gap-paper.pdf",
 		"code": "https://github.com/stogiannidis/srbench",
-		"page": "/projects/mind-the-gap/",
+		"page": "/projects/mind-the-gap/index.html",
 		"bibtex": "@misc{stogiannidis2026mindgap,\n  title={Mind the Gap: Diagnosing Spatial Reasoning Failures in Multimodal Large Language Models},\n  author={Stogiannidis, Ilias M. and McDonagh, Steven and Tsaftaris, Sotirios A.},\n  note={Preprint},\n  year={2026}\n}",
 		"image": "/img/publications/mind-the-gap-hero.png",
 		"selected": true
