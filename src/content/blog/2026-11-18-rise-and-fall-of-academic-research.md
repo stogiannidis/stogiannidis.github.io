@@ -1,6 +1,6 @@
 ---
 title: "The Rise and Fall of Academic Research"
-date: 2026-10-27
+date: 2026-11-18
 tags: [Research, PhD, AI, Writing, AI Agents]
 reading_time: 5
 ---
