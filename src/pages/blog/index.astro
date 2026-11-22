@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import siteData from '../../data/site.json';
+import { getBlogSlug } from '../../utils/blog';
 import '../../styles/blog.css';
 
 const allPosts = await getCollection('blog', ({ data }) => {
@@ -64,7 +65,7 @@ const allTags = [...new Set(sortedPosts.flatMap(p => p.data.tags || []))].sort()
       {sortedPosts.length ? (
         sortedPosts.map(post => (
           <article class="post-card reveal" data-tags={JSON.stringify(post.data.tags || [])}>
-            <a href={`/blog/${post.slug}`} class="post-card-link">
+            <a href={`/blog/${getBlogSlug(post.slug)}/`} class="post-card-link">
               <div class="post-card-content">
                 <h2 class="post-card-title">{post.data.title}</h2>
                 <div class="post-card-meta">

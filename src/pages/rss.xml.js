@@ -1,5 +1,6 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
+import { getBlogSlug } from '../utils/blog';
 
 export async function GET(context) {
 	const blog = await getCollection('blog', ({ data }) => data.draft !== true);
@@ -13,7 +14,7 @@ export async function GET(context) {
 			.map((post) => ({
 				title: post.data.title,
 				pubDate: post.data.date,
-				link: `/blog/${post.slug}/`,
+				link: `/blog/${getBlogSlug(post.slug)}/`,
 				description: post.body
 					? post.body.replace(/[#*>\_\`\[\]\-]/g, '').replace(/\n/g, ' ').slice(0, 300) + '...'
 					: '',
