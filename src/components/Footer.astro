@@ -15,18 +15,20 @@ const currentYear = new Date().getFullYear();
 <style>
   footer {
     text-align: center;
-    padding: 30px 0;
+    padding: 28px 0 max(28px, env(safe-area-inset-bottom, 28px));
     margin-top: 40px;
     border-top: 1px solid var(--border-color, #eaeaea);
   }
   
   p, small {
     color: var(--text-secondary, #777);
+    line-height: 1.8;
   }
   
   a {
     color: var(--primary-color, #3498db);
     text-decoration: none;
+    padding: 4px 2px;
   }
 
   a:hover {

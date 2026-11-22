@@ -22,20 +22,23 @@ const hasSelected = publicationsData.some(p => p.selected);
 <style>
   .pub-filter-bar {
     display: flex;
-    gap: 8px;
+    flex-wrap: wrap;
+    gap: 10px;
     margin-bottom: 20px;
   }
 
   .pub-filter-btn {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    padding: 6px 18px;
+    padding: 8px 20px;
+    min-height: 40px;
     border-radius: 20px;
     cursor: pointer;
     font-family: inherit;
-    font-size: 0.9rem;
+    font-size: 0.92rem;
     color: var(--text-color);
     transition: all 0.3s ease;
+    touch-action: manipulation;
   }
 
   .pub-filter-btn:hover {
@@ -50,29 +53,36 @@ const hasSelected = publicationsData.some(p => p.selected);
 </style>
 
 <script>
-  const filterBtns = document.querySelectorAll('.pub-filter-btn');
-  const pubCards = document.querySelectorAll('.enhanced-pub-card');
+  function initPubFilters() {
+    const filterBtns = document.querySelectorAll('.pub-filter-btn');
+    const pubCards = document.querySelectorAll('.enhanced-pub-card');
+    if (!filterBtns.length) return;
 
-  function filterPubs(mode: string) {
-    pubCards.forEach(card => {
-      const el = card as HTMLElement;
-      if (mode === 'all') {
-        el.style.display = '';
-      } else {
-        el.style.display = el.dataset.selected === 'true' ? '' : 'none';
-      }
+    function filterPubs(mode: string) {
+      pubCards.forEach(card => {
+        const el = card as HTMLElement;
+        if (mode === 'all') {
+          el.style.display = '';
+        } else {
+          el.style.display = el.dataset.selected === 'true' ? '' : 'none';
+        }
+      });
+      filterBtns.forEach(b => {
+        b.classList.toggle('active', (b as HTMLElement).dataset.filter === mode);
+      });
+    }
+
+    filterBtns.forEach(btn => {
+      (btn as HTMLElement).onclick = () => {
+        const mode = (btn as HTMLElement).dataset.filter || 'all';
+        filterPubs(mode);
+      };
     });
-    filterBtns.forEach(b => b.classList.remove('active'));
+
+    // Default: show selected
+    filterPubs('selected');
   }
 
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const mode = (btn as HTMLElement).dataset.filter || 'all';
-      filterPubs(mode);
-      btn.classList.add('active');
-    });
-  });
-
-  // Default: show selected
-  filterPubs('selected');
+  initPubFilters();
+  document.addEventListener('astro:after-swap', initPubFilters);
 </script>

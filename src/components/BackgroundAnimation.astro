@@ -9,10 +9,9 @@
 <style>
   #bg-canvas {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     z-index: -2;
     pointer-events: none;
   }
@@ -52,10 +51,19 @@
     let width = window.innerWidth;
     let height = window.innerHeight;
     let animationId = 0;
+    let lastFrameTime = 0;
     let clusters = [];
 
     const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     let reduceMotion = reduceMotionQuery.matches;
+
+    function isCompactViewport() {
+      return width < 768;
+    }
+
+    function getViewportScale() {
+      return isCompactViewport() ? Math.max(0.58, width / 768) : 1;
+    }
 
     function rgba(rgb, alpha) {
       return 'rgba(' + rgb + ', ' + alpha + ')';
@@ -88,28 +96,43 @@
     function onReducedMotionChange(event) {
       reduceMotion = event.matches;
       createClusters();
+      if (reduceMotion) {
+        stop();
+        render(performance.now());
+      } else {
+        start();
+      }
     }
 
-    function createNode(definition, nodeIndex) {
+    function createNode(definition, nodeIndex, totalNodes, scale) {
       return {
-        angle: (nodeIndex / definition.nodes) * TAU + Math.random() * 0.45,
-        radial: definition.radius * (0.42 + Math.random() * 0.56),
+        angle: (nodeIndex / totalNodes) * TAU + Math.random() * 0.45,
+        radial: definition.radius * scale * (0.42 + Math.random() * 0.56),
         orbitSpeed: (0.22 + Math.random() * 0.2) * (Math.random() < 0.5 ? -1 : 1),
         pulsePhase: Math.random() * TAU,
         pulseSpeed: 0.9 + Math.random() * 1.2,
-        size: 1.8 + Math.random() * 2.7,
+        size: (1.8 + Math.random() * 2.7) * (0.85 + scale * 0.15),
       };
     }
 
     function createClusters() {
+      const scale = getViewportScale();
       clusters = CLUSTER_DEFS.map((definition) => {
+        const nodeCount = isCompactViewport() ? Math.max(4, definition.nodes - 2) : definition.nodes;
+        const scaledDef = {
+          ...definition,
+          radius: definition.radius * scale,
+          drift: definition.drift * scale,
+          markerSize: definition.markerSize * Math.max(0.75, scale),
+          nodes: nodeCount,
+        };
         const nodes = [];
-        for (let i = 0; i < definition.nodes; i++) {
-          nodes.push(createNode(definition, i));
+        for (let i = 0; i < nodeCount; i++) {
+          nodes.push(createNode(definition, i, nodeCount, scale));
         }
 
         return {
-          ...definition,
+          ...scaledDef,
           phaseX: Math.random() * TAU,
           phaseY: Math.random() * TAU,
           driftSpeedX: 0.2 + Math.random() * 0.14,
@@ -124,11 +147,24 @@
       });
     }
 
-    function resizeCanvas() {
-      width = window.innerWidth;
-      height = window.innerHeight;
+    function resizeCanvas(force) {
+      const nextWidth = window.innerWidth;
+      const nextHeight = window.innerHeight;
+      // Ignore small height-only shifts caused by mobile browser address bars hiding/showing
+      if (!force && nextWidth === width && Math.abs(nextHeight - height) < 120) {
+        return;
+      }
+      const widthChanged = nextWidth !== width;
+      width = nextWidth;
+      height = nextHeight;
       canvas.width = width;
       canvas.height = height;
+      if (widthChanged) {
+        createClusters();
+      }
+      if (reduceMotion) {
+        render(performance.now());
+      }
     }
 
     function updateClusters(time) {
@@ -389,11 +425,19 @@
     }
 
     function step(now) {
-      render(now);
+      const frameInterval = isCompactViewport() ? 33 : 0; // ~30fps on mobile to save battery
+      if (!frameInterval || now - lastFrameTime >= frameInterval) {
+        lastFrameTime = now;
+        render(now);
+      }
       animationId = requestAnimationFrame(step);
     }
 
     function start() {
+      if (reduceMotion) {
+        render(performance.now());
+        return;
+      }
       if (animationId) return;
       animationId = requestAnimationFrame(step);
     }
@@ -408,7 +452,7 @@
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
-        resizeCanvas();
+        resizeCanvas(false);
       }, 160);
     });
 
@@ -418,17 +462,23 @@
       reduceMotionQuery.addListener(onReducedMotionChange);
     }
 
+    // Re-render static canvas when theme changes under reduced motion
+    const themeObserver = new MutationObserver(() => {
+      if (reduceMotion) render(performance.now());
+    });
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) stop();
       else start();
     });
 
     document.addEventListener('astro:after-swap', () => {
-      resizeCanvas();
+      resizeCanvas(false);
       start();
     });
 
-    resizeCanvas();
+    resizeCanvas(true);
     createClusters();
     start();
   })();

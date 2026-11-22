@@ -152,6 +152,7 @@ const pageUrl = `${siteData.url}${Astro.url.pathname}`;
     /* Share buttons */
     .share-section {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: 12px;
       padding: 20px 0;
@@ -167,12 +168,12 @@ const pageUrl = `${siteData.url}${Astro.url.pathname}`;
 
     .share-buttons {
       display: flex;
-      gap: 8px;
+      gap: 10px;
     }
 
     .share-btn {
-      width: 38px;
-      height: 38px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -182,11 +183,14 @@ const pageUrl = `${siteData.url}${Astro.url.pathname}`;
       transition: transform 0.2s, box-shadow 0.2s;
       border: none;
       cursor: pointer;
+      touch-action: manipulation;
     }
 
-    .share-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    @media (hover: hover) {
+      .share-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      }
     }
 
     .twitter-share {
@@ -213,56 +217,68 @@ const pageUrl = `${siteData.url}${Astro.url.pathname}`;
   </style>
 
   <script>
-    // Reading progress bar
-    const bar = document.getElementById('reading-progress');
-    if (bar) {
-      window.addEventListener('scroll', () => {
-        const h = document.documentElement.scrollHeight - window.innerHeight;
-        if (h > 0) bar.style.width = (window.scrollY / h * 100) + '%';
-      }, { passive: true });
-    }
+    let progressScrollHandler: (() => void) | undefined;
 
-    // Auto-generate TOC from headings
-    const tocList = document.getElementById('toc-list');
-    const content = document.querySelector('.post-content');
-    if (tocList && content) {
-      const headings = content.querySelectorAll('h2, h3');
-      if (headings.length > 0) {
-        headings.forEach((h, i) => {
-          if (!h.id) h.id = `heading-${i}`;
-          const li = document.createElement('li');
-          const a = document.createElement('a');
-          a.href = `#${h.id}`;
-          a.textContent = h.textContent;
-          if (h.tagName === 'H3') li.style.marginLeft = '18px';
-          li.appendChild(a);
-          tocList.appendChild(li);
-        });
-      } else {
-        const toc = document.getElementById('toc');
-        if (toc) toc.style.display = 'none';
+    function initBlogPost() {
+      // Reading progress bar
+      if (progressScrollHandler) {
+        window.removeEventListener('scroll', progressScrollHandler);
       }
+      const bar = document.getElementById('reading-progress');
+      if (bar) {
+        progressScrollHandler = () => {
+          const h = document.documentElement.scrollHeight - window.innerHeight;
+          if (h > 0) bar.style.width = (window.scrollY / h * 100) + '%';
+        };
+        window.addEventListener('scroll', progressScrollHandler, { passive: true });
+      }
+
+      // Auto-generate TOC from headings
+      const tocList = document.getElementById('toc-list');
+      const content = document.querySelector('.post-content');
+      if (tocList && content) {
+        tocList.innerHTML = '';
+        const headings = content.querySelectorAll('h2, h3');
+        if (headings.length > 0) {
+          headings.forEach((h, i) => {
+            if (!h.id) h.id = `heading-${i}`;
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = `#${h.id}`;
+            a.textContent = h.textContent;
+            if (h.tagName === 'H3') li.style.marginLeft = '18px';
+            li.appendChild(a);
+            tocList.appendChild(li);
+          });
+        } else {
+          const toc = document.getElementById('toc');
+          if (toc) toc.style.display = 'none';
+        }
+      }
+
+      // Copy link button
+      document.querySelectorAll('.copy-link-btn').forEach(btn => {
+        (btn as HTMLElement).onclick = async () => {
+          const url = (btn as HTMLElement).dataset.url || window.location.href;
+          try {
+            await navigator.clipboard.writeText(url);
+          } catch {
+            const ta = document.createElement('textarea');
+            ta.value = url; document.body.appendChild(ta); ta.select();
+            document.execCommand('copy'); document.body.removeChild(ta);
+          }
+          btn.classList.add('copied');
+          const icon = btn.querySelector('i');
+          if (icon) { icon.className = 'fas fa-check'; }
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            if (icon) { icon.className = 'fas fa-link'; }
+          }, 2000);
+        };
+      });
     }
 
-    // Copy link button
-    document.querySelectorAll('.copy-link-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const url = (btn as HTMLElement).dataset.url || window.location.href;
-        try {
-          await navigator.clipboard.writeText(url);
-        } catch {
-          const ta = document.createElement('textarea');
-          ta.value = url; document.body.appendChild(ta); ta.select();
-          document.execCommand('copy'); document.body.removeChild(ta);
-        }
-        btn.classList.add('copied');
-        const icon = btn.querySelector('i');
-        if (icon) { icon.className = 'fas fa-check'; }
-        setTimeout(() => {
-          btn.classList.remove('copied');
-          if (icon) { icon.className = 'fas fa-link'; }
-        }, 2000);
-      });
-    });
+    initBlogPost();
+    document.addEventListener('astro:after-swap', initBlogPost);
   </script>
 </BaseLayout>

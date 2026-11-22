@@ -44,20 +44,25 @@ const { title, description } = Astro.props;
         document.querySelectorAll(revealSel).forEach(el => { el.classList.add('reveal'); });
         const obs = new IntersectionObserver(entries => {
           entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); obs.unobserve(en.target); } });
-        }, { threshold: 0.15 });
+        }, { threshold: 0.05, rootMargin: '0px 0px 40px 0px' });
         document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
       }
 
       // Back to top button
+      let backToTopScrollHandler: (() => void) | undefined;
       function initBackToTop() {
         const btn = document.getElementById('back-to-top');
         if (!btn) return;
-        window.addEventListener('scroll', () => {
+        if (backToTopScrollHandler) {
+          window.removeEventListener('scroll', backToTopScrollHandler);
+        }
+        backToTopScrollHandler = () => {
           btn.classList.toggle('visible', window.scrollY > 400);
-        }, { passive: true });
-        btn.addEventListener('click', () => {
+        };
+        window.addEventListener('scroll', backToTopScrollHandler, { passive: true });
+        btn.onclick = () => {
           window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+        };
       }
 
       // Copy code blocks

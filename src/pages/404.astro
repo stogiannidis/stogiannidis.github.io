@@ -92,12 +92,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .not-found-actions {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 12px;
   }
 
   .not-found-btn {
     text-decoration: none;
     padding: 10px 22px;
+    min-height: 44px;
     border-radius: 20px;
     font-weight: 500;
     font-size: 0.95rem;
@@ -105,6 +108,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    touch-action: manipulation;
   }
 
   .not-found-btn:hover {

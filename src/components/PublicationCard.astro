@@ -70,9 +70,11 @@ const { pub } = Astro.props;
     background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
   }
 
-  .enhanced-pub-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--card-hover-shadow);
+  @media (hover: hover) {
+    .enhanced-pub-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--card-hover-shadow);
+    }
   }
 
   .pub-grid {
@@ -156,16 +158,22 @@ const { pub } = Astro.props;
   .btn {
     text-decoration: none !important;
     border-radius: 20px;
-    padding: 6px 14px;
+    padding: 8px 16px;
+    min-height: 36px;
     font-size: 0.85rem;
     font-weight: 500;
     transition: all 0.3s ease;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
   }
 
-  .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  @media (hover: hover) {
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
   }
 
   .pdf-btn { background: #e74c3c; color: white !important; }
@@ -177,47 +185,64 @@ const { pub } = Astro.props;
   .pub-note {
     background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
     color: white;
-    padding: 4px 12px;
+    padding: 6px 12px;
     border-radius: 20px;
     font-size: 0.8rem;
     font-weight: 600;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
   }
 
   @media (max-width: 768px) {
+    .enhanced-pub-card {
+      padding: 18px 16px;
+      margin-bottom: 20px;
+    }
+
     .pub-grid {
       flex-direction: column;
+      gap: 16px;
     }
+
     .pub-image-container {
       flex: 0 0 auto;
       width: 100%;
-      max-width: 300px;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    .pub-title a {
+      font-size: 1.05rem;
+      line-height: 1.4;
+    }
+
+    .pub-authors {
+      font-size: 0.9rem;
     }
   }
 </style>
 
 <script>
-  // BibTeX copy-to-clipboard
-  document.querySelectorAll('.bibtex-btn').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const bib = btn.getAttribute('data-bibtex');
-      if (!bib) return;
-      try {
-        await navigator.clipboard.writeText(bib);
+  function initBibtexCopy() {
+    document.querySelectorAll('.bibtex-btn').forEach(btn => {
+      (btn as HTMLElement).onclick = async () => {
+        const bib = btn.getAttribute('data-bibtex');
+        if (!bib) return;
+        try {
+          await navigator.clipboard.writeText(bib);
+        } catch {
+          const ta = document.createElement('textarea');
+          ta.value = bib; document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
         const orig = btn.textContent;
         btn.textContent = 'Copied!';
         btn.classList.add('copied');
         setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
-      } catch {
-        // Fallback
-        const ta = document.createElement('textarea');
-        ta.value = bib; document.body.appendChild(ta); ta.select(); document.execCommand('copy');
-        document.body.removeChild(ta);
-        const orig = btn.textContent;
-        btn.textContent = 'Copied!';
-        btn.classList.add('copied');
-        setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
-      }
+      };
     });
-  });
+  }
+
+  initBibtexCopy();
+  document.addEventListener('astro:after-swap', initBibtexCopy);
 </script>
