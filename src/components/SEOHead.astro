@@ -26,7 +26,7 @@ const ogImageUrl = new URL(image, Astro.site);
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <link rel="icon" type="image/png" href={siteData.favicon} />
 <meta name="generator" content={Astro.generator} />
-<meta name="theme-color" content="#1a1a2e" />
+<meta name="theme-color" content="#090414" />
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
@@ -60,9 +60,9 @@ const ogImageUrl = new URL(image, Astro.site);
 <!-- Fonts & Icons — preconnect + preload for performance -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
 
@@ -88,24 +88,11 @@ const ogImageUrl = new URL(image, Astro.site);
 
 <!-- Theme Script to prevent flash of wrong theme (also handles View Transitions) -->
 <script is:inline>
-  var darkVars = {
-    '--bg-color': '#1a1a2e', '--bg-secondary': '#16213e', '--bg-hover': '#293241',
-    '--text-color': '#e0e0e0', '--text-secondary': '#b0b0b0', '--heading-color': '#ffffff',
-    '--primary-color': '#4da8da', '--primary-hover': '#3b8bb8', '--border-color': '#2e3b4e',
-    '--card-bg': '#222831', '--card-shadow': '0 4px 15px rgba(0,0,0,0.3)',
-    '--card-hover-shadow': '0 8px 25px rgba(0,0,0,0.5)',
-    '--badge-bg': 'linear-gradient(135deg, #4b6cb7 0%, #182848 100%)', '--badge-text': '#ffffff',
-    '--research-accent': '#9b8cff', '--research-accent-secondary': '#3ecfbe'
-  };
-
   function getStoredTheme() {
     if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
       return localStorage.getItem('theme');
     }
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-    return 'light';
+    return 'dark';
   }
 
   function applyThemeToDoc(doc) {
@@ -113,10 +100,8 @@ const ogImageUrl = new URL(image, Astro.site);
     var el = doc.documentElement;
     if (theme === 'dark') {
       el.setAttribute('data-theme', 'dark');
-      for (var k in darkVars) el.style.setProperty(k, darkVars[k]);
     } else {
       el.removeAttribute('data-theme');
-      for (var k in darkVars) el.style.removeProperty(k);
     }
   }
 

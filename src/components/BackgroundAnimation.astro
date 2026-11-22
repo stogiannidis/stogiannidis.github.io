@@ -54,6 +54,44 @@
     let lastFrameTime = 0;
     let clusters = [];
 
+    // 4D Spatial Field Easter Egg state
+    const pointer = {
+      x: width * 0.5,
+      y: height * 0.45,
+      active: false,
+      holding: false,
+      locked: false,
+      strength: 0, // 0 = normal, 1 = full 4D singularity vortex
+    };
+
+    const CLUSTER_LABELS = {
+      vision: '4D.VISION // TENSOR',
+      language: '4D.LANG // SEMANTIC',
+      time: '4D.TIME // TEMPORAL',
+      space: '4D.SPACE // MANIFOLD',
+      embodiment: '4D.EMBODIED // ACT',
+    };
+
+    // 4D Tesseract (Hypercube) vertices in [-1, 1]^4 and edges
+    const TESSERACT_VERTS = [];
+    for (let i = 0; i < 16; i++) {
+      TESSERACT_VERTS.push([
+        (i & 1) ? 1 : -1,
+        (i & 2) ? 1 : -1,
+        (i & 4) ? 1 : -1,
+        (i & 8) ? 1 : -1,
+      ]);
+    }
+    const TESSERACT_EDGES = [];
+    for (let i = 0; i < 16; i++) {
+      for (let j = i + 1; j < 16; j++) {
+        const diff = i ^ j;
+        if (diff && !(diff & (diff - 1))) {
+          TESSERACT_EDGES.push([i, j]);
+        }
+      }
+    }
+
     const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     let reduceMotion = reduceMotionQuery.matches;
 
@@ -76,20 +114,20 @@
     function getThemes() {
       if (isDark()) {
         return {
-          vision: { main: '77, 168, 218', accent: '232, 180, 80', outline: '56, 120, 170' },
-          language: { main: '155, 140, 255', accent: '244, 114, 182', outline: '120, 100, 200' },
-          time: { main: '99, 102, 241', accent: '232, 180, 80', outline: '80, 90, 180' },
-          space: { main: '62, 207, 190', accent: '155, 140, 255', outline: '50, 160, 150' },
-          embodiment: { main: '99, 102, 241', accent: '52, 211, 153', outline: '80, 90, 180' },
+          vision: { main: '0, 245, 212', accent: '255, 42, 133', outline: '0, 180, 160' },
+          language: { main: '255, 42, 133', accent: '167, 139, 250', outline: '200, 30, 110' },
+          time: { main: '167, 139, 250', accent: '0, 245, 212', outline: '123, 44, 191' },
+          space: { main: '0, 245, 212', accent: '167, 139, 250', outline: '0, 180, 160' },
+          embodiment: { main: '255, 42, 133', accent: '0, 245, 212', outline: '180, 40, 120' },
         };
       }
 
       return {
-        vision: { main: '52, 152, 219', accent: '202, 138, 4', outline: '41, 128, 185' },
-        language: { main: '109, 95, 216', accent: '236, 72, 153', outline: '80, 70, 160' },
-        time: { main: '79, 70, 229', accent: '202, 138, 4', outline: '67, 56, 202' },
-        space: { main: '24, 160, 148', accent: '109, 95, 216', outline: '20, 130, 120' },
-        embodiment: { main: '79, 70, 229', accent: '16, 185, 129', outline: '67, 56, 202' },
+        vision: { main: '114, 9, 183', accent: '201, 24, 74', outline: '90, 24, 154' },
+        language: { main: '201, 24, 74', accent: '114, 9, 183', outline: '164, 19, 60' },
+        time: { main: '123, 44, 191', accent: '247, 37, 133', outline: '90, 24, 154' },
+        space: { main: '114, 9, 183', accent: '201, 24, 74', outline: '90, 24, 154' },
+        embodiment: { main: '201, 24, 74', accent: '114, 9, 183', outline: '164, 19, 60' },
       };
     }
 
@@ -169,27 +207,62 @@
 
     function updateClusters(time) {
       const themes = getThemes();
+      const targetStrength = (pointer.holding || pointer.locked) ? 1 : 0;
+      pointer.strength += (targetStrength - pointer.strength) * 0.08;
+      if (pointer.strength < 0.002 && targetStrength === 0) pointer.strength = 0;
 
-      clusters.forEach((cluster) => {
+      clusters.forEach((cluster, clusterIdx) => {
         cluster.theme = themes[cluster.id];
 
         const drift = reduceMotion ? 0 : cluster.drift;
-        cluster.x = width * cluster.fx + Math.sin(time * cluster.driftSpeedX + cluster.phaseX) * drift;
-        cluster.y = height * cluster.fy + Math.cos(time * cluster.driftSpeedY + cluster.phaseY) * drift;
-        cluster.attention = 0;
+        const baseX = width * cluster.fx + Math.sin(time * cluster.driftSpeedX + cluster.phaseX) * drift;
+        const baseY = height * cluster.fy + Math.cos(time * cluster.driftSpeedY + cluster.phaseY) * drift;
 
-        cluster.positions = cluster.nodes.map((node) => {
+        // Pull cluster centers slightly toward singularity when 4D field is active
+        const pull = pointer.strength * 0.28;
+        cluster.x = baseX * (1 - pull) + pointer.x * pull;
+        cluster.y = baseY * (1 - pull) + pointer.y * pull;
+
+        if (pointer.active) {
+          const dx = pointer.x - cluster.x;
+          const dy = pointer.y - cluster.y;
+          const dist = Math.hypot(dx, dy);
+          const prox = Math.max(0, 1 - dist / 300);
+          cluster.attention = Math.min(1, prox * 0.85 + pointer.strength * 0.65);
+        } else {
+          cluster.attention = pointer.strength * 0.6;
+        }
+
+        cluster.positions = cluster.nodes.map((node, nodeIdx) => {
           const pulse = reduceMotion ? 0 : Math.sin(time * node.pulseSpeed + node.pulsePhase);
           const angle = node.angle + (reduceMotion ? 0 : time * node.orbitSpeed * 0.12);
           const radial = node.radial + pulse * 4.2;
-          const x = cluster.x + Math.cos(angle) * radial;
-          const y = cluster.y + Math.sin(angle) * radial;
+          const homeX = cluster.x + Math.cos(angle) * radial;
+          const homeY = cluster.y + Math.sin(angle) * radial;
+
+          // 4D Orbital Vortex target position around pointer
+          const orbitShell = 52 + clusterIdx * 24 + (nodeIdx % 3) * 14;
+          const vortexAngle = node.angle + time * (1.4 + clusterIdx * 0.28) * (clusterIdx % 2 === 0 ? 1 : -1);
+          const wTilt = Math.cos(time * 1.1 + nodeIdx + clusterIdx) * 0.38;
+          const vortexX = pointer.x + Math.cos(vortexAngle) * orbitShell;
+          const vortexY = pointer.y + Math.sin(vortexAngle) * orbitShell * (0.68 + wTilt);
+
+          const s = pointer.strength;
+          const x = homeX * (1 - s) + vortexX * s;
+          const y = homeY * (1 - s) + vortexY * s;
+
+          let nodeProximity = 0;
+          if (pointer.active) {
+            const nd = Math.hypot(pointer.x - x, pointer.y - y);
+            nodeProximity = Math.max(0, 1 - nd / 210);
+          }
 
           return {
             x,
             y,
-            size: node.size + pulse * 0.16,
+            size: node.size + pulse * 0.16 + s * 0.8,
             pulse,
+            proximity: Math.min(1, nodeProximity + s * 0.55),
           };
         });
       });
@@ -268,7 +341,7 @@
     function drawNodes(cluster) {
       for (let i = 0; i < cluster.positions.length; i++) {
         const point = cluster.positions[i];
-        const proximity = 0;
+        const proximity = point.proximity || 0;
         const radius = point.size + proximity * 1.35;
         const fillColor = proximity > 0.45 ? cluster.theme.accent : cluster.theme.main;
         const alpha = (0.18 + (point.pulse + 1) * 0.045 + cluster.attention * 0.06 + proximity * 0.42) * cluster.opacity;
@@ -283,7 +356,128 @@
         ctx.beginPath();
         ctx.arc(point.x, point.y, radius + 1.5, 0, TAU);
         ctx.stroke();
+
+        // Draw live 4D tensor threads to cursor when close or in vortex mode
+        if (pointer.active && proximity > 0.28) {
+          ctx.save();
+          ctx.strokeStyle = rgba(cluster.theme.main, (proximity - 0.25) * 0.22);
+          ctx.lineWidth = 0.7 + pointer.strength * 0.4;
+          ctx.beginPath();
+          ctx.moveTo(pointer.x, pointer.y);
+          ctx.lineTo(point.x, point.y);
+          ctx.stroke();
+          ctx.restore();
+        }
       }
+
+      // HUD telemetry label above attentive clusters
+      if (cluster.attention > 0.35) {
+        const a = Math.min(0.85, (cluster.attention - 0.35) * 1.3);
+        ctx.save();
+        ctx.font = '600 10px "JetBrains Mono", monospace';
+        ctx.fillStyle = rgba(cluster.theme.main, a);
+        ctx.textAlign = 'center';
+        const label = CLUSTER_LABELS[cluster.id] || cluster.id.toUpperCase();
+        ctx.fillText('[' + label + ']', cluster.x, cluster.y - cluster.markerSize - 14);
+        ctx.restore();
+      }
+    }
+
+    function draw4DFieldHUD(time) {
+      if (!pointer.active && pointer.strength < 0.01) return;
+
+      const cyan = isDark() ? '0, 245, 212' : '114, 9, 183';
+      const magenta = isDark() ? '255, 42, 133' : '201, 24, 74';
+      const s = pointer.strength;
+      const baseAlpha = pointer.active ? 0.28 + s * 0.55 : s * 0.65;
+
+      ctx.save();
+      ctx.translate(pointer.x, pointer.y);
+
+      // Outer rotating holographic reticle rings
+      ctx.strokeStyle = rgba(cyan, baseAlpha * 0.55);
+      ctx.lineWidth = 1;
+      ctx.setLineDash([5, 7]);
+      ctx.beginPath();
+      ctx.arc(0, 0, 26 + s * 38, time * 0.9, time * 0.9 + TAU);
+      ctx.stroke();
+
+      if (s > 0.04) {
+        ctx.strokeStyle = rgba(magenta, s * 0.45);
+        ctx.setLineDash([10, 6]);
+        ctx.beginPath();
+        ctx.arc(0, 0, 52 + s * 64, -time * 1.2, -time * 1.2 + TAU);
+        ctx.stroke();
+
+        // Project rotating 4D Tesseract (Hypercube) in XW, YW, ZW planes
+        const scale4D = 16 + s * 26;
+        const aXW = time * 1.7;
+        const aYW = time * 1.25;
+        const aZW = time * 0.95;
+        const cosXW = Math.cos(aXW), sinXW = Math.sin(aXW);
+        const cosYW = Math.cos(aYW), sinYW = Math.sin(aYW);
+        const cosZW = Math.cos(aZW), sinZW = Math.sin(aZW);
+
+        const projected = TESSERACT_VERTS.map((v) => {
+          let x = v[0], y = v[1], z = v[2], w = v[3];
+          // Rotate XW
+          let nx = x * cosXW - w * sinXW;
+          let nw = x * sinXW + w * cosXW;
+          x = nx; w = nw;
+          // Rotate YW
+          let ny = y * cosYW - w * sinYW;
+          nw = y * sinYW + w * cosYW;
+          y = ny; w = nw;
+          // Rotate XY/ZW
+          let nz = z * cosZW - x * sinZW;
+          nx = z * sinZW + x * cosZW;
+          z = nz; x = nx;
+
+          const wPersp = 1 / (2.4 - w * 0.55);
+          const zPersp = 1 / (2.6 - z * 0.45);
+          const p = wPersp * zPersp * 2.2 * scale4D;
+          return [x * p, y * p, w];
+        });
+
+        ctx.setLineDash([]);
+        ctx.lineWidth = 1.1;
+        for (let i = 0; i < TESSERACT_EDGES.length; i++) {
+          const e = TESSERACT_EDGES[i];
+          const p1 = projected[e[0]];
+          const p2 = projected[e[1]];
+          const wAvg = (p1[2] + p2[2]) * 0.5;
+          ctx.strokeStyle = rgba(wAvg > 0 ? cyan : magenta, s * (0.35 + (wAvg + 1) * 0.18));
+          ctx.beginPath();
+          ctx.moveTo(p1[0], p1[1]);
+          ctx.lineTo(p2[0], p2[1]);
+          ctx.stroke();
+        }
+      }
+
+      // Live 4D HUD coordinate telemetry readout
+      ctx.setLineDash([]);
+      ctx.font = '600 10px "JetBrains Mono", monospace';
+      ctx.textAlign = 'left';
+      const normX = ((pointer.x / Math.max(1, width)) * 2 - 1).toFixed(2);
+      const normY = (((1 - pointer.y / Math.max(1, height)) * 2) - 1).toFixed(2);
+      const normW = Math.sin(time * 1.5).toFixed(2);
+      const tauVal = (time % 99.9).toFixed(2);
+
+      if (s > 0.1) {
+        ctx.fillStyle = rgba(magenta, Math.min(0.95, s));
+        ctx.fillText(
+          pointer.locked ? '4D.TESSERACT // FIELD_LOCKED [DBL-CLICK EXIT]' : '4D.TESSERACT // SINGULARITY_ACTIVE',
+          36,
+          -14
+        );
+        ctx.fillStyle = rgba(cyan, Math.min(0.9, s));
+        ctx.fillText(`x=${normX} y=${normY} w=${normW} Δt=${tauVal}s`, 36, 0);
+      } else if (pointer.active) {
+        ctx.fillStyle = rgba(cyan, 0.5);
+        ctx.fillText(`4D.FIELD [${normX}, ${normY}, w=${normW}]`, 22, 4);
+      }
+
+      ctx.restore();
     }
 
     function drawVisionMarker(cluster) {
@@ -422,6 +616,7 @@
       for (let i = 0; i < clusters.length; i++) drawIdleMesh(clusters[i]);
       for (let i = 0; i < clusters.length; i++) drawMarker(clusters[i], time);
       for (let i = 0; i < clusters.length; i++) drawNodes(clusters[i]);
+      draw4DFieldHUD(time);
     }
 
     function step(now) {
@@ -467,6 +662,51 @@
       if (reduceMotion) render(performance.now());
     });
     themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+    // 4D Spatial Field Pointer & Hold/Double-Click Handlers
+    function isInteractiveElement(target) {
+      if (!target || typeof target.closest !== 'function') return false;
+      return Boolean(target.closest('a, button, input, textarea, select, summary, details, pre, code'));
+    }
+
+    window.addEventListener('pointermove', (e) => {
+      pointer.x = e.clientX;
+      pointer.y = e.clientY;
+      pointer.active = true;
+    }, { passive: true });
+
+    window.addEventListener('pointerdown', (e) => {
+      pointer.x = e.clientX;
+      pointer.y = e.clientY;
+      pointer.active = true;
+      if (e.button === 0 && !isInteractiveElement(e.target)) {
+        pointer.holding = true;
+      }
+    }, { passive: true });
+
+    window.addEventListener('pointerup', () => {
+      pointer.holding = false;
+    }, { passive: true });
+
+    window.addEventListener('pointercancel', () => {
+      pointer.holding = false;
+    }, { passive: true });
+
+    window.addEventListener('dblclick', (e) => {
+      if (isInteractiveElement(e.target)) return;
+      pointer.x = e.clientX;
+      pointer.y = e.clientY;
+      pointer.active = true;
+      pointer.locked = !pointer.locked;
+    });
+
+    window['__toggle4DField'] = function (x, y) {
+      pointer.x = typeof x === 'number' ? x : width * 0.62;
+      pointer.y = typeof y === 'number' ? y : height * 0.42;
+      pointer.active = true;
+      pointer.locked = !pointer.locked;
+      return pointer.locked;
+    };
 
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) stop();
