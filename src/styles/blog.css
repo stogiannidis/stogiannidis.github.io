@@ -198,7 +198,6 @@
 	word-wrap: break-word;
 }
 
-.post-content h2,
 .post-content h3 {
 	color: var(--heading-color);
 	border-bottom: none;
